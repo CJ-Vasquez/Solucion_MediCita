@@ -1,0 +1,36 @@
+﻿@model List<MediCita.Web.Entidades.Medico>
+@{
+    ViewData["Title"] = "Elegir Médico";
+}
+
+<div class="container mt-4">
+    <h3 class="text-primary">Médicos Disponibles: @ViewBag.Especialidad</h3>
+    <hr />
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-warning">No hay médicos disponibles para esta especialidad.</div>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    }
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3"><i class="bi bi-person-circle fs-1 text-secondary"></i></div>
+                        <h5 class="card-title">Dr. @item.NombreCompleto</h5>
+                        <p class="card-text text-muted">CMP: @item.CMP</p>
+
+                        <a asp-action="Reservar"
+                           asp-route-idMedico="@item.IdMedico"
+                           asp-route-nombreMedico="@item.NombreCompleto"
+                           asp-route-especialidad="@ViewBag.Especialidad"
+                           class="btn btn-primary w-100">Reservar Cita</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

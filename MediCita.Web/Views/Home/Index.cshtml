@@ -1,0 +1,183 @@
+﻿@{
+    ViewData["Title"] = "Bienvenido";
+}
+
+<div id="heroCarousel" class="carousel slide shadow mb-5" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active" style="height: 500px;">
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" class="d-block w-100 h-100" style="object-fit: cover; filter: brightness(0.7);" alt="Hospital">
+            <div class="carousel-caption d-none d-md-block text-start mb-5">
+                <h1 class="display-3 fw-bold">Tu Salud, Nuestra Prioridad</h1>
+                <p class="fs-4">Gestiona tus citas médicas y medicamentos desde la comodidad de tu hogar.</p>
+                @if (!User.Identity!.IsAuthenticated)
+                {
+                    <a asp-controller="Acceso" asp-action="Login" class="btn btn-primary btn-lg px-5 rounded-pill shadow">Iniciar Sesión</a>
+                }
+            </div>
+        </div>
+        <div class="carousel-item" style="height: 500px;">
+            <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" class="d-block w-100 h-100" style="object-fit: cover; filter: brightness(0.7);" alt="Farmacia">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 class="display-4 fw-bold">Farmacia Digital</h1>
+                <p class="fs-4">Catálogo completo de medicamentos con stock en tiempo real.</p>
+            </div>
+        </div>
+        <div class="carousel-item" style="height: 500px;">
+            <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" class="d-block w-100 h-100" style="object-fit: cover; filter: brightness(0.7);" alt="Doctores">
+            <div class="carousel-caption d-none d-md-block text-end mb-5">
+                <h1 class="display-4 fw-bold">Especialistas Calificados</h1>
+                <p class="fs-4">Reserva citas con los mejores médicos de la ciudad.</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+</div>
+
+<div class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Nuestros Servicios</h2>
+        <p class="text-muted">Una plataforma integral diseñada para optimizar la atención médica.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-up">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-calendar-check fs-1"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Reservas Online</h4>
+                    <p class="card-text text-muted">Agenda tu cita médica en segundos. Selecciona especialidad, médico y horario disponible.</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Citas" asp-action="Index" class="btn btn-outline-primary mt-2">Ir a Citas</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-up">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-capsule fs-1"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Farmacia y Stock</h4>
+                    <p class="card-text text-muted">Compra medicamentos directamente desde nuestra tienda con stock actualizado al instante.</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Venta" asp-action="Catalogo" class="btn btn-outline-success mt-2">Ir a Tienda</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-up">
+                <div class="card-body text-center p-4">
+                    <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-graph-up-arrow fs-1"></i>
+                    </div>
+                    <h4 class="card-title fw-bold">Historial y Reportes</h4>
+                    <p class="card-text text-muted">Accede a tu historial médico completo y revisa tus compras anteriores fácilmente.</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Citas" asp-action="MisCitas" class="btn btn-outline-info mt-2">Ver Historial</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h3 class="fw-bold mb-3">Sobre MediCita</h3>
+                <p class="text-muted">
+                    MediCita es un proyecto académico desarrollado con tecnología .NET 6, SQL Server y Arquitectura MVC.
+                    Nuestro objetivo es digitalizar los procesos de atención en centros de salud, reduciendo tiempos de espera y mejorando la experiencia del paciente.
+                </p>
+                <ul class="list-unstyled text-muted">
+                    <li><i class="bi bi-check-circle text-success me-2"></i> Seguridad y Confidencialidad</li>
+                    <li><i class="bi bi-check-circle text-success me-2"></i> Atención 24/7</li>
+                    <li><i class="bi bi-check-circle text-success me-2"></i> Soporte Técnico</li>
+                </ul>
+            </div>
+
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg overflow-hidden">
+                        <div class="row g-0">
+                            <div class="col-md-5 d-none d-md-block"
+                                 style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'); background-size: cover; background-position: center;">
+                            </div>
+
+                            <div class="col-md-7">
+                                <div class="modal-header border-0 pb-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4 pt-0">
+                                    <div class="text-center mb-4">
+                                        <i class="bi bi-hospital-fill text-primary" style="font-size: 3rem;"></i>
+                                        <h3 class="fw-bold mt-2">Bienvenido</h3>
+                                        <p class="text-muted small">Ingresa a tu cuenta MediCita</p>
+                                    </div>
+
+                                    @if (TempData["ErrorLogin"] != null)
+                                    {
+                                        <div class="alert alert-danger p-2 text-center small mb-3">
+                                            <i class="bi bi-exclamation-circle"></i> @TempData["ErrorLogin"]
+                                        </div>
+                                    }
+
+                                    <form asp-controller="Acceso" asp-action="Login" method="post">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" name="correo" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                                            <label for="floatingInput">Correo Electrónico</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="password" name="clave" class="form-control" id="floatingPassword" placeholder="Password" required>
+                                            <label for="floatingPassword">Contraseña</label>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold">INGRESAR</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer border-0 justify-content-center pt-0 pb-4">
+                                    <small class="text-muted">¿Olvidaste tu contraseña? <a href="#" class="text-decoration-none">Recuperar</a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (TempData["ErrorLogin"] != null)
+            {
+                <script>
+                    window.addEventListener('DOMContentLoaded', event => {
+                        var myModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                        myModal.show();
+                    });
+                </script>
+            }
+            <div class="col-md-6 text-center">
+                <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded shadow" alt="Sobre Nosotros">
+            </div>
+        </div>
+    </div>
+</div>
