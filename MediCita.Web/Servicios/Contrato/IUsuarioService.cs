@@ -4,8 +4,13 @@ namespace MediCita.Web.Servicios.Contrato
 {
     public interface IUsuarioService
     {
-        // Definimos el método que usaremos. 
-        // Usamos Task<> para que sea asíncrono (async/await), como piden las buenas prácticas modernas.
+        // Validar usuario existente (Login)
         Task<Usuario> ValidarUsuario(string correo, string clave);
+        
+        // Registrar nuevo usuario (Cliente/Paciente)
+        Task<bool> RegistrarCliente(Usuario usuario);
+        
+        // Verificar si el correo ya existe
+        Task<bool> ExisteCorreo(string correo);
     }
 }

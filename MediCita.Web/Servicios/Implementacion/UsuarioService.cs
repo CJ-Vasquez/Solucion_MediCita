@@ -31,7 +31,7 @@ namespace MediCita.Web.Servicios.Implementacion
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@Correo", correo);
-                cmd.Parameters.AddWithValue("Clave", clave);
+                cmd.Parameters.AddWithValue("@Clave", clave);
 
                 try
                 {
@@ -62,5 +62,57 @@ namespace MediCita.Web.Servicios.Implementacion
             return usuarioEncontrado;
         }
 
+        public async Task<bool> RegistrarCliente(Usuario usuario)
+        {
+            bool respuesta = false;
+            string cadenaConexion = _configuration.GetConnectionString("CadenaSQL");
+
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                SqlCommand cmd = new SqlCommand("usp_RegistrarCliente", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@NombreCompleto", usuario.NombreCompleto);
+                cmd.Parameters.AddWithValue("@Correo", usuario.Correo);
+                cmd.Parameters.AddWithValue("@Clave", usuario.Clave);
+
+                try
+                {
+                    await cn.OpenAsync();
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.Message;
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
+
+        public async Task<bool> ExisteCorreo(string correo)
+        {
+            bool existe = false;
+            string cadenaConexion = _configuration.GetConnectionString("CadenaSQL");
+
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM tb_Usuarios WHERE Correo = @Correo", cn);
+                cmd.Parameters.AddWithValue("@Correo", correo);
+
+                try
+                {
+                    await cn.OpenAsync();
+                    int count = (int)await cmd.ExecuteScalarAsync();
+                    existe = count > 0;
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.Message;
+                }
+            }
+            return existe;
+        }
     }
 }

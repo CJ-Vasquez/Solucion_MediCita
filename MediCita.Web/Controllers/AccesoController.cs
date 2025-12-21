@@ -25,7 +25,6 @@ namespace MediCita.Web.Controllers
             {
                 return RedirectToAction("Dashboard", "Admin");
             }
-            // Si alguien accede directamente, mostrar la página de login completa
             return View();
         }
 
@@ -82,6 +81,55 @@ namespace MediCita.Web.Controllers
             return RedirectToAction("Dashboard", "Admin");
         }
 
+        // POST: Procesar el inicio de sesión desde el modal
+        [HttpPost]
+        public async Task<IActionResult> LoginModal(string correo, string clave)
+        {
+            // 1. Validar credenciales con el servicio (Base de Datos)
+            Usuario usuario_encontrado = await _usuarioService.ValidarUsuario(correo, clave);
+
+            // 2. Si no existe el usuario, devolvemos error
+            if (usuario_encontrado == null)
+            {
+                TempData["ErrorLogin"] = "Correo o contraseña incorrectos. Por favor, intente de nuevo.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // 3. Si existe, creamos la identidad del usuario (Carnet virtual)
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, usuario_encontrado.NombreCompleto ?? "Usuario"),
+                new Claim(ClaimTypes.Email, usuario_encontrado.Correo ?? ""),
+                new Claim(ClaimTypes.Role, usuario_encontrado.NombreRol ?? "Cliente"),
+                new Claim("IdUsuario", usuario_encontrado.IdUsuario.ToString())
+            };
+
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            AuthenticationProperties properties = new AuthenticationProperties()
+            {
+                AllowRefresh = true,
+                IsPersistent = true
+            };
+
+            // 4. Guardar la Cookie de sesión en el navegador
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                properties
+            );
+
+            // 5. Redirigir según el rol
+            if (usuario_encontrado.NombreRol == "Administrador")
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
+            else
+            {
+                TempData["Success"] = $"¡Bienvenido, {usuario_encontrado.NombreCompleto}!";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         // GET: Acceso/Registrarse - Vista completa (opcional)
         public IActionResult Registrarse()
         {
@@ -129,6 +177,63 @@ namespace MediCita.Web.Controllers
             TempData["Info"] = "El sistema de registro estará disponible próximamente. Por ahora puedes usar las credenciales de prueba.";
             
             return string.IsNullOrEmpty(returnUrl) ? RedirectToAction("Login") : Redirect(returnUrl);
+        }
+
+        // POST: Registrar nuevo cliente desde el modal
+        [HttpPost]
+        public async Task<IActionResult> RegistrarCliente(string nombreCompleto, string correo, 
+                                                           string clave, string confirmarClave)
+        {
+            // Validaciones básicas
+            if (string.IsNullOrEmpty(nombreCompleto) || string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(clave))
+            {
+                TempData["ErrorRegistro"] = "Por favor, complete todos los campos obligatorios.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (clave != confirmarClave)
+            {
+                TempData["ErrorRegistro"] = "Las contraseñas no coinciden.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (clave.Length < 6)
+            {
+                TempData["ErrorRegistro"] = "La contraseña debe tener al menos 6 caracteres.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Verificar si el correo ya existe
+            bool existeCorreo = await _usuarioService.ExisteCorreo(correo);
+            if (existeCorreo)
+            {
+                TempData["ErrorRegistro"] = "Este correo ya está registrado. Intenta con otro correo.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Crear el objeto usuario
+            Usuario nuevoUsuario = new Usuario()
+            {
+                NombreCompleto = nombreCompleto,
+                Correo = correo,
+                Clave = clave, // En producción deberías hashear la contraseña
+                IdRol = 2 // 2 = Cliente/Paciente
+            };
+
+            // Registrar en la base de datos
+            bool respuesta = await _usuarioService.RegistrarCliente(nuevoUsuario);
+
+            if (respuesta)
+            {
+                TempData["Success"] = "¡Cuenta creada exitosamente! Ya puedes iniciar sesión.";
+                TempData["MostrarLogin"] = true; // Para abrir automáticamente el modal de login
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                TempData["ErrorRegistro"] = "Ocurrió un error al crear tu cuenta. Intenta de nuevo.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         // GET: Cerrar Sesión

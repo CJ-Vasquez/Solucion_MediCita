@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-100">
 <head>
     <meta charset="utf-8" />
@@ -22,43 +22,77 @@
                 <div class="collapse navbar-collapse" id="navbarContent">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Admin" asp-action="Dashboard">
-                                    <i class="bi bi-speedometer2"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-building"></i> Servicios
-                                </a>
-                                <ul class="dropdown-menu shadow">
-                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="Index"><i class="bi bi-calendar-check text-primary"></i> Reservar Cita</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-clock-history text-info"></i> Mis Citas</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicamentos">
-                                    <i class="bi bi-capsule"></i> Botica
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicos">
-                                    <i class="bi bi-person-badge"></i> Nuestros Medicos
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Especialidades">
-                                    <i class="bi bi-heart-pulse"></i> Especialidades
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Medicamentos" asp-action="Index">
-                                    <i class="bi bi-gear"></i> Gestion
-                                </a>
-                            </li>
-                        </ul>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Dashboard">
+                                        <i class="bi bi-speedometer2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-building"></i> Servicios
+                                    </a>
+                                    <ul class="dropdown-menu shadow">
+                                        <li><a class="dropdown-item" asp-controller="Citas" asp-action="Index"><i class="bi bi-calendar-check text-primary"></i> Reservar Cita</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-clock-history text-info"></i> Mis Citas</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicamentos">
+                                        <i class="bi bi-capsule"></i> Botica
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicos">
+                                        <i class="bi bi-person-badge"></i> Nuestros Medicos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Especialidades">
+                                        <i class="bi bi-heart-pulse"></i> Especialidades
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Medicamentos" asp-action="Index">
+                                        <i class="bi bi-gear"></i> Gestion
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Cliente" asp-action="Dashboard">
+                                        <i class="bi bi-speedometer2"></i> Mi Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Citas" asp-action="Index">
+                                        <i class="bi bi-calendar-plus"></i> Reservar Cita
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicamentos">
+                                        <i class="bi bi-capsule"></i> Botica
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicos">
+                                        <i class="bi bi-person-badge"></i> Medicos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Cliente" asp-action="MisCitas">
+                                        <i class="bi bi-list-check"></i> Mis Citas
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+
                         <ul class="navbar-nav ms-auto align-items-center">
                             <li class="nav-item">
                                 <a class="nav-link position-relative" asp-controller="Venta" asp-action="Carrito">
@@ -72,9 +106,18 @@
                                     <span class="d-none d-lg-inline">@User.Identity.Name</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Mi Perfil</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-calendar"></i> Mis Citas</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i> Mis Compras</a></li>
+                                    @if (User.IsInRole("Cliente"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Cliente" asp-action="MiPerfil"><i class="bi bi-person"></i> Mi Perfil</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Cliente" asp-action="MisCitas"><i class="bi bi-calendar"></i> Mis Citas</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Cliente" asp-action="MisCompras"><i class="bi bi-bag"></i> Mis Compras</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Mi Perfil</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-calendar"></i> Mis Citas</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i> Mis Compras</a></li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item text-danger" asp-controller="Acceso" asp-action="Salir"><i class="bi bi-box-arrow-right"></i> Cerrar Sesion</a></li>
                                 </ul>
@@ -107,12 +150,12 @@
                         </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Acceso" asp-action="Registrarse">
+                                <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#registroModal">
                                     <i class="bi bi-person-plus"></i> Registrarse
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link btn btn-light text-primary ms-2" asp-controller="Acceso" asp-action="Login">
+                                <a class="nav-link btn btn-light text-primary ms-2" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesion
                                 </a>
                             </li>
@@ -122,66 +165,184 @@
             </div>
         </nav>
     </header>
-    
+
     <div class="flex-grow-1">
         <main role="main">
             @RenderBody()
         </main>
     </div>
 
+    <!-- Modal de Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title w-100 text-center fw-bold">
+                        <i class="bi bi-shield-lock me-2"></i>Iniciar Sesion
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-hospital-fill text-primary" style="font-size: 4rem;"></i>
+                        <p class="text-muted mt-2">Bienvenido de nuevo a MediCita</p>
+                    </div>
+                    @if (TempData["ErrorLogin"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible">
+                            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorLogin"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <form asp-controller="Acceso" asp-action="LoginModal" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Correo Electronico</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="correo" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Contrasena</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="clave" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                            </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p class="mb-0">No tienes cuenta? <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registroModal">Registrate aqui</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal fade" id="registroModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white border-0">
+                    <h5 class="modal-title w-100 text-center fw-bold">
+                        <i class="bi bi-person-plus me-2"></i>Crear Cuenta de Cliente
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-heart-pulse text-success" style="font-size: 4rem;"></i>
+                        <p class="text-muted mt-2">Unete a la familia MediCita</p>
+                    </div>
+                    @if (TempData["ErrorRegistro"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible">
+                            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorRegistro"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <form asp-controller="Acceso" asp-action="RegistrarCliente" method="post" id="formRegistro">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Nombre Completo</label>
+                                <input type="text" name="nombreCompleto" class="form-control" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Correo Electronico</label>
+                                <input type="email" name="correo" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Contrasena</label>
+                                <input type="password" name="clave" id="clave" class="form-control" minlength="6" required />
+                                <small class="text-muted">Minimo 6 caracteres</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Confirmar Contrasena</label>
+                                <input type="password" name="confirmarClave" id="confirmarClave" class="form-control" required />
+                                <small id="errorClave" class="text-danger" style="display:none;">Las contrasenas no coinciden</small>
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="terminos" required>
+                            <label class="form-check-label" for="terminos">
+                                Acepto los <a href="#" onclick="event.preventDefault(); openTerminos();">terminos y condiciones</a>
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Crear mi Cuenta
+                            </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p class="mb-0">Ya tienes cuenta? <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">Inicia sesion</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Terminos -->
+    <div class="modal fade" id="terminosModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-file-text me-2"></i>Terminos y Condiciones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold">1. Aceptacion de Terminos</h6>
+                    <p>Al usar MediCita, aceptas estos terminos y condiciones.</p>
+                    <h6 class="fw-bold">2. Servicios</h6>
+                    <p>Ofrecemos reservas de citas medicas y venta de medicamentos.</p>
+                    <h6 class="fw-bold">3. Registro</h6>
+                    <p>Debes ser mayor de 18 anos y proporcionar informacion veraz.</p>
+                    <h6 class="fw-bold">4. Privacidad</h6>
+                    <p>Protegemos tu informacion personal segun nuestra politica de privacidad.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="aceptarTerminos()">Acepto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer mt-auto py-5 bg-dark text-white-50">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="text-white mb-3">
-                        <i class="bi bi-hospital-fill me-2"></i>MediCita
-                    </h5>
-                    <p class="small">
-                        Tu salud es nuestra prioridad. Ofrecemos servicios medicos de calidad con profesionales altamente capacitados.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="text-white-50 me-3"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-white-50"><i class="bi bi-linkedin"></i></a>
-                    </div>
+                    <h5 class="text-white mb-3"><i class="bi bi-hospital-fill me-2"></i>MediCita</h5>
+                    <p class="small">Tu salud es nuestra prioridad.</p>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="text-white mb-3">Enlaces Rapidos</h5>
+                    <h5 class="text-white mb-3">Enlaces</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Inicio</a></li>
-                        <li><a asp-controller="Catalogo" asp-action="Medicos" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Nuestros Medicos</a></li>
-                        <li><a asp-controller="Catalogo" asp-action="Medicamentos" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Botica</a></li>
-                        <li><a asp-controller="Citas" asp-action="Index" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Reservar Cita</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Medicos" class="text-white-50 text-decoration-none">Medicos</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Medicamentos" class="text-white-50 text-decoration-none">Botica</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-white mb-3">Especialidades</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-heart-pulse"></i> Cardiologia</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-person"></i> Pediatria</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-bandaid"></i> Dermatologia</a></li>
-                        <li><a asp-controller="Catalogo" asp-action="Especialidades" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Ver todas</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Especialidades" class="text-white-50 text-decoration-none">Ver todas</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-white mb-3">Contacto</h5>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><i class="bi bi-geo-alt-fill text-info"></i> Av. Principal 123, Lima, Peru</li>
-                        <li class="mb-2"><i class="bi bi-telephone-fill text-success"></i> +51 123 456 789</li>
-                        <li class="mb-2"><i class="bi bi-envelope-fill text-danger"></i> info@medicita.com</li>
-                        <li><i class="bi bi-clock-fill text-warning"></i> Lun-Vie: 8am-8pm</li>
-                    </ul>
+                    <p class="small"><i class="bi bi-envelope"></i> info@medicita.com</p>
+                    <p class="small"><i class="bi bi-telephone"></i> +51 123 456 789</p>
                 </div>
             </div>
-            <hr class="my-4 bg-white-50">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2025 MediCita. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0">Desarrollado con <i class="bi bi-heart-fill text-danger"></i> por Cibertec</p>
-                </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 MediCita - Desarrollado por Cibertec</p>
             </div>
         </div>
     </footer>
@@ -189,6 +350,86 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function openTerminos() {
+            var registroModal = bootstrap.Modal.getInstance(document.getElementById('registroModal'));
+            registroModal.hide();
+            var terminosModal = new bootstrap.Modal(document.getElementById('terminosModal'));
+            terminosModal.show();
+        }
+
+        function aceptarTerminos() {
+            document.getElementById('terminos').checked = true;
+            var terminosModal = bootstrap.Modal.getInstance(document.getElementById('terminosModal'));
+            terminosModal.hide();
+            var registroModal = new bootstrap.Modal(document.getElementById('registroModal'));
+            registroModal.show();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formRegistro');
+            if (form) {
+                const clave = document.getElementById('clave');
+                const confirmar = document.getElementById('confirmarClave');
+                const error = document.getElementById('errorClave');
+
+                function validar() {
+                    if (confirmar.value && clave.value !== confirmar.value) {
+                        error.style.display = 'block';
+                        confirmar.classList.add('is-invalid');
+                        return false;
+                    } else {
+                        error.style.display = 'none';
+                        confirmar.classList.remove('is-invalid');
+                        return true;
+                    }
+                }
+
+                confirmar.addEventListener('input', validar);
+                clave.addEventListener('input', validar);
+
+                form.addEventListener('submit', function(e) {
+                    if (!validar()) {
+                        e.preventDefault();
+                        alert('Las contrasenas no coinciden');
+                    }
+                });
+            }
+        });
+    </script>
+
+    @if (TempData["ErrorLogin"] != null)
+    {
+        <script>
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        </script>
+    }
+
+    @if (TempData["ErrorRegistro"] != null)
+    {
+        <script>
+            var registroModal = new bootstrap.Modal(document.getElementById('registroModal'));
+            registroModal.show();
+        </script>
+    }
+
+    @if (TempData["MostrarLogin"] != null)
+    {
+        <script>
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        </script>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            alert('@TempData["Success"]');
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
