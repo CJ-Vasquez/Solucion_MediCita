@@ -31,7 +31,10 @@ namespace MediCita.Web.Servicios.Implementacion
                         {
                             IdMedico = Convert.ToInt32(dr["IdMedico"]),
                             NombreCompleto = dr["NombreCompleto"].ToString(),
-                            Especialidad = dr["Especialidad"].ToString(),
+                            Especialidad = new Especialidad()
+                            {
+                                NombreEspec = dr["Especialidad"].ToString() ?? ""
+                            },
                             CMP = dr["CMP"].ToString()
                         });
                     }

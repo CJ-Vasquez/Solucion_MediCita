@@ -1,0 +1,211 @@
+@model List<MediCita.Web.Entidades.Medicamento>
+@{
+    ViewData["Title"] = "Botica - Catálogo de Medicamentos";
+}
+
+<div class="container-fluid py-5">
+    <!-- Header de la sección -->
+    <div class="section-header fade-in">
+        <h2>
+            <i class="bi bi-capsule-pill"></i> Botica MediCita
+        </h2>
+        <div class="section-divider"></div>
+        <p class="lead">Encuentra todos los medicamentos que necesitas con la mejor calidad</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="searchMedicamento" class="form-control" placeholder="Buscar medicamento...">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="filterLaboratorio">
+                <option value="">Todos los laboratorios</option>
+                @foreach (var lab in Model.Select(m => m.Laboratorio).Distinct().OrderBy(l => l))
+                {
+                    <option value="@lab">@lab</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="sortPrice">
+                <option value="">Ordenar por precio</option>
+                <option value="asc">Menor a mayor</option>
+                <option value="desc">Mayor a menor</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Catálogo de Productos -->
+    <div class="row g-4" id="catalogoContainer">
+        @if (Model.Count == 0)
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                <h4 class="text-muted">No hay medicamentos disponibles</h4>
+            </div>
+        }
+        else
+        {
+            @foreach (var medicamento in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 medicamento-item" 
+                     data-nombre="@medicamento.Nombre.ToLower()" 
+                     data-laboratorio="@medicamento.Laboratorio"
+                     data-precio="@medicamento.Precio">
+                    <div class="card product-card h-100">
+                        <div class="position-relative overflow-hidden">
+                            @if (medicamento.Stock > 0)
+                            {
+                                <span class="product-badge badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Disponible
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="product-badge badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Agotado
+                                </span>
+                            }
+                            
+                            <!-- Imagen del medicamento -->
+                            <img src="https://via.placeholder.com/300x200/0d6efd/ffffff?text=@Uri.EscapeDataString(medicamento.Nombre)" 
+                                 class="card-img-top" 
+                                 alt="@medicamento.Nombre">
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-truncate" title="@medicamento.Nombre">
+                                @medicamento.Nombre
+                            </h5>
+                            
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-building"></i> @medicamento.Laboratorio
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="product-price">S/ @medicamento.Precio.ToString("N2")</span>
+                                    <span class="badge @(medicamento.Stock > 10 ? "bg-success" : medicamento.Stock > 0 ? "bg-warning" : "bg-danger")">
+                                        Stock: @medicamento.Stock
+                                    </span>
+                                </div>
+                                
+                                @if (medicamento.Stock > 0)
+                                {
+                                    <button class="btn btn-primary w-100" onclick="agregarAlCarrito(@medicamento.IdMedicamento)">
+                                        <i class="bi bi-cart-plus"></i> Agregar al Carrito
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-x-circle"></i> No Disponible
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Información adicional -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-truck fs-1 text-primary mb-3"></i>
+                <h5>Envío Rápido</h5>
+                <p class="text-muted">Recibe tus medicamentos en 24-48 horas</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-shield-check fs-1 text-success mb-3"></i>
+                <h5>Productos Garantizados</h5>
+                <p class="text-muted">Todos nuestros medicamentos están certificados</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-headset fs-1 text-info mb-3"></i>
+                <h5>Soporte 24/7</h5>
+                <p class="text-muted">Estamos aquí para ayudarte en todo momento</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Búsqueda en tiempo real
+        document.getElementById('searchMedicamento').addEventListener('keyup', filtrarMedicamentos);
+        document.getElementById('filterLaboratorio').addEventListener('change', filtrarMedicamentos);
+        document.getElementById('sortPrice').addEventListener('change', ordenarPorPrecio);
+
+        function filtrarMedicamentos() {
+            const searchTerm = document.getElementById('searchMedicamento').value.toLowerCase();
+            const laboratorio = document.getElementById('filterLaboratorio').value;
+            const items = document.querySelectorAll('.medicamento-item');
+
+            items.forEach(item => {
+                const nombre = item.dataset.nombre;
+                const lab = item.dataset.laboratorio;
+                
+                const matchSearch = nombre.includes(searchTerm);
+                const matchLab = laboratorio === '' || lab === laboratorio;
+                
+                item.style.display = matchSearch && matchLab ? '' : 'none';
+            });
+        }
+
+        function ordenarPorPrecio() {
+            const sortOrder = document.getElementById('sortPrice').value;
+            if (!sortOrder) return;
+
+            const container = document.getElementById('catalogoContainer');
+            const items = Array.from(document.querySelectorAll('.medicamento-item'));
+
+            items.sort((a, b) => {
+                const priceA = parseFloat(a.dataset.precio);
+                const priceB = parseFloat(b.dataset.precio);
+                return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+            });
+
+            items.forEach(item => container.appendChild(item));
+        }
+
+        function agregarAlCarrito(idMedicamento) {
+            // Mostrar notificación
+            const toast = document.createElement('div');
+            toast.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                <i class="bi bi-check-circle"></i> Medicamento agregado al carrito
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+
+            // Aquí puedes agregar la lógica para agregar al carrito
+            console.log('Agregando medicamento ID:', idMedicamento);
+        }
+    </script>
+}

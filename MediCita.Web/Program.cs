@@ -13,6 +13,7 @@ builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 builder.Services.AddScoped<IVentaService, VentaService>(); // Si ya creaste este servicio
 builder.Services.AddScoped<IEspecialidadService, EspecialidadService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
+builder.Services.AddScoped<IMedicoService, MedicoService>(); // Servicio de Médicos
 
 // 3. Configuración de Autenticación (Login)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

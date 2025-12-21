@@ -4,7 +4,10 @@
     {
         public int IdMedico { get; set; }
         public string NombreCompleto { get; set; }
-        public string Especialidad { get; set; } // Para mostrar el nombre
+        public int IdEspecialidad { get; set; }
+        public Especialidad? Especialidad { get; set; } // Navegación a la entidad Especialidad
         public string CMP { get; set; } // Colegio Médico
+        public string Correo { get; set; }
+        public string Telefono { get; set; }
     }
 }

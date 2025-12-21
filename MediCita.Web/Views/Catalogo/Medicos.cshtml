@@ -1,0 +1,125 @@
+﻿@model List<MediCita.Web.Entidades.Medico>
+@{
+    ViewData["Title"] = "Nuestros Médicos";
+    var especialidades = ViewBag.Especialidades as List<string> ?? new List<string>();
+    var especialidadFiltro = ViewBag.EspecialidadFiltro as string;
+}
+
+<div class="container-fluid py-5">
+    <div class="section-header fade-in">
+        <h2><i class="bi bi-people-fill"></i> Nuestros Médicos Especialistas</h2>
+        <div class="section-divider"></div>
+        <p class="lead">Conoce a nuestro equipo de profesionales altamente capacitados</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(especialidadFiltro))
+    {
+        <div class="alert alert-info alert-dismissible fade show">
+            <i class="bi bi-filter-circle"></i> Mostrando médicos de: <strong>@especialidadFiltro</strong>
+            <a asp-controller="Catalogo" asp-action="Medicos" class="btn btn-sm btn-outline-info ms-2">Ver todos</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-primary text-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="searchMedico" class="form-control" placeholder="Buscar médico...">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" id="filterEspecialidad">
+                <option value="">Todas las Especialidades</option>
+                @foreach (var esp in especialidades)
+                {
+                    <option value="@esp">@esp</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4" id="medicosContainer">
+        @foreach (var medico in Model.OrderBy(m => m.NombreCompleto))
+        {
+            var especialidadNombre = medico.Especialidad?.NombreEspec ?? "General";
+            var avatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(medico.NombreCompleto)}&background=0d6efd&color=fff&size=300";
+
+            <div class="col-lg-3 col-md-4 col-sm-6 medico-item" data-nombre="@medico.NombreCompleto.ToLower()" data-especialidad="@especialidadNombre">
+                <div class="card product-card h-100">
+                    <div class="position-relative overflow-hidden">
+                        <span class="product-badge badge bg-success"><i class="bi bi-check-circle"></i> Disponible</span>
+                        <img src="@avatarUrl" class="card-img-top" alt="@medico.NombreCompleto">
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-truncate" title="@medico.NombreCompleto">Dr(a). @medico.NombreCompleto</h5>
+                        <p class="text-muted small mb-2"><i class="bi bi-heart-pulse"></i> @especialidadNombre</p>
+                        <div class="mt-auto">
+                            <div class="mb-2">
+                                <small class="text-muted"><i class="bi bi-card-text"></i> CMP: @medico.CMP</small><br />
+                                <small class="text-muted"><i class="bi bi-envelope"></i> @medico.Correo</small><br />
+                                <small class="text-muted"><i class="bi bi-telephone"></i> @medico.Telefono</small>
+                            </div>
+                            <a asp-controller="Citas" asp-action="Index" class="btn btn-primary w-100">
+                                <i class="bi bi-calendar-plus"></i> Reservar Cita
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-award fs-1 text-warning mb-3"></i>
+                <h5>Médicos Certificados</h5>
+                <p class="text-muted">Todos nuestros profesionales cuentan con certificaciones vigentes</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-clock-history fs-1 text-primary mb-3"></i>
+                <h5>Atención Rápida</h5>
+                <p class="text-muted">Citas disponibles en 24-48 horas</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <i class="bi bi-heart-pulse fs-1 text-danger mb-3"></i>
+                <h5>Múltiples Especialidades</h5>
+                <p class="text-muted">Contamos con @especialidades.Count especialidades médicas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchMedico').addEventListener('keyup', filtrarMedicos);
+        document.getElementById('filterEspecialidad').addEventListener('change', filtrarMedicos);
+
+        function filtrarMedicos() {
+            const searchTerm = document.getElementById('searchMedico').value.toLowerCase();
+            const especialidad = document.getElementById('filterEspecialidad').value;
+            const items = document.querySelectorAll('.medico-item');
+
+            items.forEach(item => {
+                const nombre = item.dataset.nombre;
+                const esp = item.dataset.especialidad;
+                const matchSearch = nombre.includes(searchTerm);
+                const matchEsp = especialidad === '' || esp === especialidad;
+                item.style.display = matchSearch && matchEsp ? '' : 'none';
+            });
+        }
+    </script>
+}

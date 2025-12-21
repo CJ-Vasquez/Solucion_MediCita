@@ -1,82 +1,120 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="h-100">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MediCita</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column h-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3 sticky-top">
-            <div class="container">
-                <a class="navbar-brand fw-bold fs-3"
-                   asp-controller="@(User.Identity!.IsAuthenticated ? "Admin" : "Home")"
-                   asp-action="@(User.Identity!.IsAuthenticated ? "Dashboard" : "Index")">
-                    <i class="bi bi-hospital-fill"></i> MediCita
+        <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary shadow-sm sticky-top">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold fs-3 d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-hospital-fill me-2"></i>
+                    <span class="text-gradient-white">MediCita</span>
                 </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-
-                    @if (User.Identity!.IsAuthenticated)
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <ul class="navbar-nav flex-grow-1">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Admin" asp-action="Dashboard">
-                                    <i class="bi bi-speedometer2"></i> Panel
+                                    <i class="bi bi-speedometer2"></i> Dashboard
                                 </a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Medicamentos" asp-action="Index">Gestión Farmacia</a>
-                            </li>
-
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                                    Citas Médicas
+                                    <i class="bi bi-building"></i> Servicios
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="Index">Reservar Cita</a></li>
+                                <ul class="dropdown-menu shadow">
+                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="Index"><i class="bi bi-calendar-check text-primary"></i> Reservar Cita</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas">Mis Reportes</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-clock-history text-info"></i> Mis Citas</a></li>
                                 </ul>
                             </li>
-
-                            <li class="nav-item ms-3">
-                                <a class="nav-link btn btn-warning text-dark fw-bold px-3 py-1" asp-controller="Venta" asp-action="Catalogo">
-                                    <i class="bi bi-cart4"></i> Tienda
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicamentos">
+                                    <i class="bi bi-capsule"></i> Botica
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicos">
+                                    <i class="bi bi-person-badge"></i> Nuestros Medicos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Especialidades">
+                                    <i class="bi bi-heart-pulse"></i> Especialidades
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Medicamentos" asp-action="Index">
+                                    <i class="bi bi-gear"></i> Gestion
                                 </a>
                             </li>
                         </ul>
-
-                        <ul class="navbar-nav align-items-center">
-                            <li class="nav-item me-3">
-                                <span class="text-white fw-light">Hola, <strong>@User.Identity.Name</strong></span>
-                            </li>
+                        <ul class="navbar-nav ms-auto align-items-center">
                             <li class="nav-item">
-                                <a class="btn btn-outline-light btn-sm" asp-controller="Acceso" asp-action="Salir">
-                                    Cerrar Sesión <i class="bi bi-box-arrow-right"></i>
+                                <a class="nav-link position-relative" asp-controller="Venta" asp-action="Carrito">
+                                    <i class="bi bi-cart4 fs-4 text-warning"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                                 </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle fs-4 me-2"></i>
+                                    <span class="d-none d-lg-inline">@User.Identity.Name</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Mi Perfil</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Citas" asp-action="MisCitas"><i class="bi bi-calendar"></i> Mis Citas</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i> Mis Compras</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" asp-controller="Acceso" asp-action="Salir"><i class="bi bi-box-arrow-right"></i> Cerrar Sesion</a></li>
+                                </ul>
                             </li>
                         </ul>
                     }
                     else
                     {
-                        <ul class="navbar-nav flex-grow-1">
-                        </ul>
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <button type="button" class="btn btn-light text-primary fw-bold px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                    <i class="bi bi-person-circle"></i> Iniciar Sesión
-                                </button>
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-house"></i> Inicio
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicamentos">
+                                    <i class="bi bi-capsule"></i> Botica
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Medicos">
+                                    <i class="bi bi-person-badge"></i> Nuestros Medicos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Catalogo" asp-action="Especialidades">
+                                    <i class="bi bi-heart-pulse"></i> Especialidades
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Acceso" asp-action="Registrarse">
+                                    <i class="bi bi-person-plus"></i> Registrarse
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-light text-primary ms-2" asp-controller="Acceso" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesion
+                                </a>
                             </li>
                         </ul>
                     }
@@ -84,23 +122,73 @@
             </div>
         </nav>
     </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
+    
+    <div class="flex-grow-1">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-light mt-auto py-3">
-        <div class="container text-center">
-            &copy; 2025 - MediCita Web - <a asp-area="" asp-controller="Home" asp-action="Index">Proyecto Cibertec</a>
+    <footer class="footer mt-auto py-5 bg-dark text-white-50">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">
+                        <i class="bi bi-hospital-fill me-2"></i>MediCita
+                    </h5>
+                    <p class="small">
+                        Tu salud es nuestra prioridad. Ofrecemos servicios medicos de calidad con profesionales altamente capacitados.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white-50"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Enlaces Rapidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Inicio</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Medicos" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Nuestros Medicos</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Medicamentos" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Botica</a></li>
+                        <li><a asp-controller="Citas" asp-action="Index" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Reservar Cita</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Especialidades</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-heart-pulse"></i> Cardiologia</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-person"></i> Pediatria</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-bandaid"></i> Dermatologia</a></li>
+                        <li><a asp-controller="Catalogo" asp-action="Especialidades" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right"></i> Ver todas</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-geo-alt-fill text-info"></i> Av. Principal 123, Lima, Peru</li>
+                        <li class="mb-2"><i class="bi bi-telephone-fill text-success"></i> +51 123 456 789</li>
+                        <li class="mb-2"><i class="bi bi-envelope-fill text-danger"></i> info@medicita.com</li>
+                        <li><i class="bi bi-clock-fill text-warning"></i> Lun-Vie: 8am-8pm</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-50">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 MediCita. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">Desarrollado con <i class="bi bi-heart-fill text-danger"></i> por Cibertec</p>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
