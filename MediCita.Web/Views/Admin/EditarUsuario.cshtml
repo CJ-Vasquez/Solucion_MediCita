@@ -1,0 +1,65 @@
+﻿@model MediCita.Web.Entidades.Usuario
+@{
+    ViewData["Title"] = "Editar Usuario";
+    var roles = ViewBag.Roles as List<MediCita.Web.Entidades.Rol> ?? new();
+}
+
+<div class="container-fluid py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-warning bg-gradient">
+            <h3 class="text-white mb-0"><i class="bi bi-pencil-square me-2"></i>Editar Usuario</h3>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="EditarUsuario" method="post">
+                <input type="hidden" asp-for="IdUsuario" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <input asp-for="NombreCompleto" class="form-control" />
+                        <span asp-validation-for="NombreCompleto" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input asp-for="Correo" type="email" class="form-control" />
+                        <span asp-validation-for="Correo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nueva Contraseña (opcional)</label>
+                        <input asp-for="Clave" type="password" class="form-control"
+                               placeholder="Dejar vacío para mantener la actual" />
+                        <small class="text-muted">Dejar en blanco si no deseas cambiar la contraseña</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Rol</label>
+                        <select asp-for="IdRol" class="form-select">
+                            @foreach (var r in roles)
+                            {
+                                <option value="@r.IdRol" selected="@(r.IdRol == Model.IdRol)">
+                                    @r.NombreRol
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="IdRol" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <a asp-action="Usuarios" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Volver
+                    </a>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save me-1"></i>Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

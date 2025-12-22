@@ -1,0 +1,129 @@
+﻿@model List<MediCita.Web.Entidades.Usuario>
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold" style="color:#667eea;">
+                <i class="bi bi-people me-2"></i>Gestión de Usuarios
+            </h2>
+            <p class="text-muted mb-0">Administra todas las cuentas del sistema</p>
+        </div>
+        <a asp-action="CrearUsuario" class="btn btn-gradient-primary">
+            <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+        </a>
+    </div>
+
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Exito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var u in Model.OrderBy(x => x.NombreCompleto))
+                            {
+                                var badgeColor = u.IdRol == 1 ? "bg-danger" : (u.IdRol == 2 ? "bg-success" : "bg-primary");
+                                <tr>
+                                    <td><span class="badge bg-secondary">@u.IdUsuario</span></td>
+                                    <td><strong>@u.NombreCompleto</strong></td>
+                                    <td>@u.Correo</td>
+                                    <td><span class="badge @badgeColor">@u.NombreRol</span></td>
+                                    <td class="text-center">
+                                        <a asp-action="EditarUsuario" asp-route-id="@u.IdUsuario"
+                                           class="btn btn-sm btn-warning me-1" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="confirmarEliminar(@u.IdUsuario, '@u.NombreCompleto')"
+                                                title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay usuarios registrados
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulario oculto para eliminar -->
+<form id="formEliminar" asp-action="EliminarUsuario" method="post" style="display:none;">
+    <input type="hidden" id="idUsuarioEliminar" name="id" />
+</form>
+
+<style>
+    .btn-gradient-primary {
+        background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function confirmarEliminar(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar este usuario?',
+                html: `<p class="mb-0">Se eliminará permanentemente a:</p><p class="fw-bold text-danger mb-0">${nombre}</p>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bi bi-trash me-1"></i> Sí, eliminar',
+                cancelButtonText: '<i class="bi bi-x-circle me-1"></i> Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-danger me-2',
+                    cancelButton: 'btn btn-secondary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('idUsuarioEliminar').value = id;
+                    document.getElementById('formEliminar').submit();
+                }
+            });
+        }
+    </script>
+}

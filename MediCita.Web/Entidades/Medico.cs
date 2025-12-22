@@ -3,11 +3,14 @@
     public class Medico
     {
         public int IdMedico { get; set; }
-        public string NombreCompleto { get; set; }
+        public int IdUsuario { get; set; } // ✅ AGREGADO: Para vincular con tb_Usuarios
         public int IdEspecialidad { get; set; }
-        public Especialidad? Especialidad { get; set; } // Navegación a la entidad Especialidad
-        public string CMP { get; set; } // Colegio Médico
-        public string Correo { get; set; }
-        public string Telefono { get; set; }
+        public string NombreCompleto { get; set; } = string.Empty;
+        public string CMP { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+
+        // Navegación
+        public Especialidad? Especialidad { get; set; }
     }
 }

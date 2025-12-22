@@ -1,0 +1,125 @@
+@model List<MediCita.Web.Entidades.Venta>
+@{
+    ViewData["Title"] = "Mis Compras";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-bag-check"></i> Historial de Compras</h2>
+        <a asp-controller="Venta" asp-action="Catalogo" class="btn btn-success">
+            <i class="bi bi-cart-plus"></i> Ir a la Botica
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Estadísticas Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bag-check-fill fs-1 text-success mb-2"></i>
+                        <h4 class="mb-0">@Model.Count</h4>
+                        <p class="text-muted mb-0">Compras Realizadas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-currency-dollar fs-1 text-primary mb-2"></i>
+                        <h4 class="mb-0">S/. @Model.Sum(v => v.Total).ToString("N2")</h4>
+                        <p class="text-muted mb-0">Total Gastado</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up-arrow fs-1 text-info mb-2"></i>
+                        <h4 class="mb-0">S/. @(Model.Any() ? Model.Average(v => v.Total).ToString("N2") : "0.00")</h4>
+                        <p class="text-muted mb-0">Promedio por Compra</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Compras -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-hash"></i> N° Venta</th>
+                                <th><i class="bi bi-calendar3"></i> Fecha</th>
+                                <th><i class="bi bi-currency-dollar"></i> Total</th>
+                                <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var venta in Model.OrderByDescending(v => v.IdVenta))
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">#@venta.IdVenta.ToString("D6")</strong>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-calendar-event text-muted"></i>
+                                        Compra registrada
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success fs-6">S/. @venta.Total.ToString("N2")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver Detalle">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>TOTAL GENERAL:</strong></td>
+                                <td colspan="2">
+                                    <strong class="text-success fs-5">S/. @Model.Sum(v => v.Total).ToString("N2")</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="alert alert-info mt-4" role="alert">
+            <i class="bi bi-info-circle"></i>
+            <strong>Nota:</strong> Todas tus compras están registradas y puedes verificarlas en cualquier momento. 
+            Si tienes alguna consulta, contáctanos.
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-bag-x display-1 text-muted"></i>
+                <h4 class="mt-4 text-muted">No has realizado compras</h4>
+                <p class="text-muted">Explora nuestro catálogo de medicamentos y realiza tu primera compra</p>
+                <a asp-controller="Venta" asp-action="Catalogo" class="btn btn-success mt-3">
+                    <i class="bi bi-cart-plus"></i> Ir a la Botica
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    // Inicializar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+}

@@ -2,75 +2,89 @@
     ViewData["Title"] = "Panel Administrativo";
 }
 
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
-        <h1 class="h3 mb-0 text-gray-800 text-primary fw-bold">
-            <i class="bi bi-speedometer2"></i> Dashboard Administrativo
-        </h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="bi bi-download"></i> Generar Reporte General
+<div class="container-fluid py-5" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);">
+    <!-- HEADER -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h1 class="h2 mb-2 fw-bold" style="color: #1a1a2e;">
+                <i class="bi bi-speedometer2 me-2" style="color: var(--color-primary);"></i>
+                Dashboard Administrativo
+            </h1>
+            <p class="text-muted mb-0">Resumen general del sistema</p>
+        </div>
+        <a href="#" class="btn btn-gradient-primary shadow-sm px-4 py-2">
+            <i class="bi bi-download me-2"></i>Generar Reporte General
         </a>
     </div>
 
-    <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2 border-primary border-3 border-start border-0">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Total Pacientes</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">@ViewBag.TotalPacientes</div>
+    <!-- TARJETAS DE MÉTRICAS -->
+    <div class="row g-4 mb-5">
+        <!-- Total Pacientes -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-card"
+                 style="border-left: 4px solid var(--color-primary) !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted text-uppercase small fw-semibold mb-2 ls-1">TOTAL PACIENTES</p>
+                            <h3 class="mb-0 fw-bold" style="color: #1a1a2e;">@ViewBag.TotalPacientes</h3>
                         </div>
-                        <div class="col-auto">
-                            <i class="bi bi-people-fill fs-2 text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2 border-success border-3 border-start border-0">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Citas para Hoy</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">@ViewBag.CitasHoy</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-calendar-check fs-2 text-gray-300"></i>
+                        <div class="icon-box" style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-people-fill fs-2" style="color: var(--color-primary);"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2 border-info border-3 border-start border-0">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-info text-uppercase mb-1">Ventas del Día</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">@ViewBag.VentasDia</div>
+        <!-- Citas para Hoy -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-card"
+                 style="border-left: 4px solid #10b981 !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted text-uppercase small fw-semibold mb-2 ls-1">CITAS PARA HOY</p>
+                            <h3 class="mb-0 fw-bold" style="color: #1a1a2e;">@ViewBag.CitasHoy</h3>
                         </div>
-                        <div class="col-auto">
-                            <i class="bi bi-currency-dollar fs-2 text-gray-300"></i>
+                        <div class="icon-box" style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-calendar-check fs-2 text-success"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2 border-warning border-3 border-start border-0">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Stock Bajo</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">18 Productos</div>
+        <!-- Ventas del Día -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-card"
+                 style="border-left: 4px solid #3b82f6 !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted text-uppercase small fw-semibold mb-2 ls-1">VENTAS DEL DÍA</p>
+                            <h3 class="mb-0 fw-bold" style="color: #1a1a2e;">@ViewBag.VentasDia</h3>
                         </div>
-                        <div class="col-auto">
-                            <i class="bi bi-exclamation-triangle-fill fs-2 text-gray-300"></i>
+                        <div class="icon-box" style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-currency-dollar fs-2 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Bajo -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-card"
+                 style="border-left: 4px solid #f59e0b !important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted text-uppercase small fw-semibold mb-2 ls-1">STOCK BAJO</p>
+                            <h3 class="mb-0 fw-bold" style="color: #1a1a2e;">18 Productos</h3>
+                        </div>
+                        <div class="icon-box" style="width: 60px; height: 60px; background: rgba(245, 158, 11, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-exclamation-triangle-fill fs-2 text-warning"></i>
                         </div>
                     </div>
                 </div>
@@ -78,49 +92,101 @@
         </div>
     </div>
 
-    <h4 class="mb-3 text-muted">Gestión del Sistema</h4>
-    <div class="row">
+    <!-- SECCIÓN DE GESTIÓN -->
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1" style="color: #1a1a2e;">Gestión del Sistema</h4>
+        <p class="text-muted">Accede a las diferentes secciones administrativas</p>
+    </div>
 
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-white">
-                    <h6 class="m-0 fw-bold text-primary"><i class="bi bi-capsule"></i> Farmacia</h6>
-                </div>
-                <div class="card-body">
-                    <p>Administración del catálogo de medicamentos, precios y stock.</p>
-                    <a asp-controller="Medicamentos" asp-action="Index" class="btn btn-primary w-100">
-                        Ir al Inventario <i class="bi bi-arrow-right"></i>
+    <div class="row g-4">
+        <!-- Farmacia -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15)); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-capsule fs-4" style="color: var(--color-primary);"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold" style="color: #1a1a2e;">Farmacia</h5>
+                    </div>
+                    <p class="text-muted mb-4">Administración del catálogo de medicamentos, precios y stock.</p>
+                    <a asp-controller="Medicamentos" asp-action="Index" class="btn btn-gradient-primary w-100">
+                        Ir al Inventario
+                        <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-white">
-                    <h6 class="m-0 fw-bold text-success"><i class="bi bi-person-badge"></i> Médicos</h6>
-                </div>
-                <div class="card-body">
-                    <p>Registro de nuevos médicos, asignación de especialidades y horarios.</p>
+        <!-- Médicos -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box me-3" style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-badge fs-4 text-success"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold" style="color: #1a1a2e;">Médicos</h5>
+                    </div>
+                    <p class="text-muted mb-4">Registro de nuevos médicos, asignación de especialidades y horarios.</p>
                     <a asp-controller="Medicos" asp-action="Index" class="btn btn-success w-100">
-                        Gestionar Médicos <i class="bi bi-arrow-right"></i>
+                        Gestionar Médicos
+                        <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-white">
-                    <h6 class="m-0 fw-bold text-info"><i class="bi bi-tags"></i> Especialidades</h6>
-                </div>
-                <div class="card-body">
-                    <p>Catálogo de especialidades médicas disponibles en la clínica.</p>
+        <!-- Especialidades -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box me-3" style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-tags fs-4 text-info"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold" style="color: #1a1a2e;">Especialidades</h5>
+                    </div>
+                    <p class="text-muted mb-4">Catálogo de especialidades médicas disponibles en la clínica.</p>
                     <a asp-controller="Citas" asp-action="Index" class="btn btn-info text-white w-100">
-                        Ver Especialidades <i class="bi bi-eye"></i>
+                        Ver Especialidades
+                        <i class="bi bi-eye ms-2"></i>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+        }
+
+    .hover-card-lift {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
+        }
+
+    .ls-1 {
+        letter-spacing: 0.5px;
+    }
+
+    .icon-box {
+        transition: all 0.3s ease;
+    }
+
+    .hover-card:hover .icon-box,
+    .hover-card-lift:hover .icon-box {
+        transform: scale(1.1);
+    }
+</style>

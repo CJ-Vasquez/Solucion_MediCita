@@ -17,10 +17,8 @@ namespace MediCita.Web.Servicios.Implementacion
         public async Task<List<Especialidad>> Listar()
         {
             List<Especialidad> lista = new List<Especialidad>();
-
             using (SqlConnection cn = new SqlConnection(_configuration.GetConnectionString("CadenaSQL")))
             {
-                // Consulta directa para agilizar (o usa un SP si ya lo creaste)
                 SqlCommand cmd = new SqlCommand("SELECT IdEspecialidad, NombreEspec, Descripcion FROM tb_Especialidades", cn);
                 cmd.CommandType = CommandType.Text;
 
@@ -32,8 +30,8 @@ namespace MediCita.Web.Servicios.Implementacion
                         lista.Add(new Especialidad()
                         {
                             IdEspecialidad = Convert.ToInt32(dr["IdEspecialidad"]),
-                            NombreEspec = dr["NombreEspec"].ToString(),
-                            Descripcion = dr["Descripcion"].ToString()
+                            NombreEspec = dr["NombreEspec"]?.ToString() ?? string.Empty,
+                            Descripcion = dr["Descripcion"]?.ToString() ?? string.Empty
                         });
                     }
                 }

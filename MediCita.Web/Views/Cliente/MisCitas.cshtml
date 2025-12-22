@@ -1,0 +1,168 @@
+@model List<MediCita.Web.Entidades.Cita>
+@{
+    ViewData["Title"] = "Mis Citas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-calendar-check"></i> Mis Citas Médicas</h2>
+        <a asp-controller="Citas" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-calendar-plus"></i> Agendar Nueva Cita
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Filtros -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="searchCita" class="form-control border-0" placeholder="Buscar por médico o especialidad...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="filterEstado">
+                            <option value="">Todos los Estados</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Atendida">Atendida</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Citas -->
+        <div class="row g-4" id="citasContainer">
+            @foreach (var cita in Model.OrderByDescending(c => c.FechaCita))
+            {
+                <div class="col-md-6 col-lg-4 cita-card" data-medico="@cita.NombreMedico?.ToLower()" data-especialidad="@cita.NombreEspecialidad?.ToLower()" data-estado="@cita.Estado">
+                    <div class="card h-100 border-0 shadow-sm hover-up">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">
+                                        <i class="bi bi-person-badge text-primary"></i>
+                                        @cita.NombreMedico
+                                    </h5>
+                                    <p class="text-muted small mb-0">
+                                        <i class="bi bi-heart-pulse"></i> @cita.NombreEspecialidad
+                                    </p>
+                                </div>
+                                @if (cita.Estado == "Pendiente")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock"></i> Pendiente
+                                    </span>
+                                }
+                                else if (cita.Estado == "Atendida")
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Atendida
+                                    </span>
+                                }
+                                else if (cita.Estado == "Cancelada")
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Cancelada
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@cita.Estado</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar3 text-primary me-2"></i>
+                                    <strong>Fecha:</strong> <span class="ms-2">@cita.FechaCita.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock text-primary me-2"></i>
+                                    <strong>Hora:</strong> <span class="ms-2">@cita.FechaCita.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+
+                            @if (cita.FechaCita > DateTime.Now && cita.Estado == "Pendiente")
+                            {
+                                <div class="alert alert-info py-2 px-3 mb-0 small">
+                                    <i class="bi bi-info-circle"></i>
+                                    Próxima cita en @((cita.FechaCita - DateTime.Now).Days) días
+                                </div>
+                            }
+                            else if (cita.FechaCita < DateTime.Now && cita.Estado == "Pendiente")
+                            {
+                                <div class="alert alert-warning py-2 px-3 mb-0 small">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Cita pasada - Verificar estado
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-calendar-x display-1 text-muted"></i>
+                <h4 class="mt-4 text-muted">No tienes citas registradas</h4>
+                <p class="text-muted">Agenda tu primera cita con nuestros especialistas</p>
+                <a asp-controller="Citas" asp-action="Index" class="btn btn-primary mt-3">
+                    <i class="bi bi-calendar-plus"></i> Agendar Primera Cita
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    // Búsqueda en tiempo real
+    document.getElementById('searchCita')?.addEventListener('keyup', function() {
+        filtrarCitas();
+    });
+
+    document.getElementById('filterEstado')?.addEventListener('change', function() {
+        filtrarCitas();
+    });
+
+    function filtrarCitas() {
+        const searchTerm = document.getElementById('searchCita').value.toLowerCase();
+        const estadoFiltro = document.getElementById('filterEstado').value.toLowerCase();
+        const cards = document.querySelectorAll('.cita-card');
+        
+        cards.forEach(card => {
+            const medico = card.getAttribute('data-medico') || '';
+            const especialidad = card.getAttribute('data-especialidad') || '';
+            const estado = card.getAttribute('data-estado')?.toLowerCase() || '';
+            
+            const matchSearch = medico.includes(searchTerm) || especialidad.includes(searchTerm);
+            const matchEstado = estadoFiltro === '' || estado === estadoFiltro;
+            
+            if (matchSearch && matchEstado) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+}
+
+<style>
+    .hover-up {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hover-up:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+</style>

@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MediCita.Web\Views\Catalogo\" />
-    <Folder Include="MediCita.Web\Views\Shared\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

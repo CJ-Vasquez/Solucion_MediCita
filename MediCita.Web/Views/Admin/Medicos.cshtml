@@ -1,0 +1,98 @@
+﻿@model List<MediCita.Web.Entidades.Medico>
+@{
+    ViewData["Title"] = "Gestión de Médicos";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold" style="color:#667eea;">
+                <i class="bi bi-people-fill me-2"></i>Gestión de Médicos
+            </h2>
+            <p class="text-muted mb-0">Administra el registro de médicos del sistema</p>
+        </div>
+        <a asp-action="CrearMedico" class="btn btn-gradient-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Médico
+        </a>
+    </div>
+
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Exito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;">
+                        <tr>
+                            <th>CMP</th>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var m in Model.OrderBy(x => x.NombreCompleto))
+                            {
+                                <tr>
+                                    <td><span class="badge bg-primary">@m.CMP</span></td>
+                                    <td><strong>@m.NombreCompleto</strong></td>
+                                    <td>@m.Especialidad?.NombreEspec</td>
+                                    <td>@m.Correo</td>
+                                    <td>@m.Telefono</td>
+                                    <td class="text-center">
+                                        <a asp-action="EditarMedico" asp-route-id="@m.IdMedico" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="EliminarMedico" method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Seguro que deseas eliminar este médico?');">
+                                            <input type="hidden" name="id" value="@m.IdMedico" />
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay médicos registrados
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gradient-primary {
+        background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+</style>

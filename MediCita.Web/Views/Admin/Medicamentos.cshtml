@@ -1,0 +1,97 @@
+﻿@model List<MediCita.Web.Entidades.Medicamento>
+@{
+    ViewData["Title"] = "Gestión de Medicamentos";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold" style="color:#11998e;">
+                <i class="bi bi-capsule-pill me-2"></i>Gestión de Medicamentos
+            </h2>
+            <p class="text-muted mb-0">Administra el catálogo de la botica</p>
+        </div>
+        <a asp-action="CrearMedicamento" class="btn btn-gradient-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Medicamento
+        </a>
+    </div>
+
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Exito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:white;">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Laboratorio</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var m in Model.OrderBy(x => x.Nombre))
+                            {
+                                <tr>
+                                    <td><strong>@m.Nombre</strong></td>
+                                    <td>@m.Laboratorio</td>
+                                    <td><span class="badge bg-success">S/ @m.Precio.ToString("N2")</span></td>
+                                    <td>@m.Stock</td>
+                                    <td class="text-center">
+                                        <a asp-action="EditarMedicamento" asp-route-id="@m.IdMedicamento"
+                                           class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="EliminarMedicamento" method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Eliminar este medicamento?');">
+                                            <input type="hidden" name="id" value="@m.IdMedicamento" />
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay medicamentos registrados
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gradient-primary {
+        background: linear-gradient(135deg,#11998e 0%,#38ef7d 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+</style>

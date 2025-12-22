@@ -1,57 +1,145 @@
 ﻿@model List<MediCita.Web.Entidades.DetalleVenta>
 @{
-    ViewData["Title"] = "Mi Carrito";
+    ViewData["Title"] = "Mi Carrito de Compras";
 }
 
-<div class="container mt-4">
-    <h2 class="text-primary mb-3">Resumen de Compra</h2>
+<div class="container-fluid py-5" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);">
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <div class="mb-3">
+            <i class="bi bi-cart3" style="font-size: 3.5rem; color: var(--color-primary);"></i>
+        </div>
+        <h1 class="display-5 fw-bold mb-3">Mi Carrito de Compras</h1>
+        <div class="mx-auto mb-3" style="width: 100px; height: 4px; background: var(--gradient-primary); border-radius: 2px;"></div>
+        <p class="lead text-muted">Revisa tus productos antes de finalizar la compra</p>
+    </div>
 
-    @if (TempData["Error"] != null)
+    @if (!Model.Any())
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
-    }
-
-    @if (Model.Count == 0)
-    {
-        <div class="alert alert-warning">Tu carrito está vacío. <a asp-action="Catalogo">Ir a comprar</a></div>
+        <!-- CARRITO VACÍO -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm text-center p-5" style="border-radius: 1.5rem; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);">
+                    <i class="bi bi-cart-x text-muted mb-4" style="font-size: 5rem; opacity: 0.3;"></i>
+                    <h4 class="mb-3">Tu carrito está vacío</h4>
+                    <p class="text-muted mb-4">Agrega productos desde nuestro catálogo de farmacia</p>
+                    <a asp-controller="Catalogo" asp-action="Medicamentos" class="btn btn-gradient-primary btn-lg">
+                        <i class="bi bi-capsule me-2"></i>Ir al Catálogo
+                    </a>
+                </div>
+            </div>
+        </div>
     }
     else
     {
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio Unit.</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="row">
+            <!-- LISTA DE PRODUCTOS -->
+            <div class="col-lg-8 mb-4">
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>@item.NombreMedicamento</td>
-                        <td>S/. @item.Precio</td>
-                        <td>@item.Cantidad</td>
-                        <td class="fw-bold">S/. @item.Total</td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr class="table-secondary">
-                    <td colspan="3" class="text-end fw-bold">TOTAL A PAGAR:</td>
-                    <td class="fw-bold fs-5 text-success">S/. @Model.Sum(x => x.Total)</td>
-                </tr>
-            </tfoot>
-        </table>
+                    <div class="card border-0 shadow-sm mb-3 hover-up" style="border-radius: 1rem;">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <!-- ICONO -->
+                                <div class="col-auto">
+                                    <div class="d-flex align-items-center justify-content-center"
+                                         style="width: 80px; height: 80px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 1rem;">
+                                        <i class="bi bi-capsule" style="font-size: 2.5rem; color: var(--color-primary);"></i>
+                                    </div>
+                                </div>
 
-        <div class="d-flex justify-content-between">
-            <a asp-action="Catalogo" class="btn btn-secondary">Seguir Comprando</a>
-            <form asp-action="TerminarVenta" method="post">
-                <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('¿Confirmar compra?');">
-                    <i class="bi bi-check-circle"></i> Confirmar Compra
-                </button>
-            </form>
+                                <!-- DETALLES -->
+                                <div class="col">
+                                    <h5 class="fw-bold mb-2">@item.NombreMedicamento</h5>
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark px-3 py-2">
+                                                <i class="bi bi-box me-1"></i>Cantidad: <strong>@item.Cantidad</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SUBTOTAL Y ELIMINAR -->
+                                <div class="col-auto text-end">
+                                    <h4 class="fw-bold mb-3" style="color: var(--color-primary);">
+                                        S/. @item.Total.ToString("0.00")
+                                    </h4>
+                                    <form asp-controller="Venta" asp-action="EliminarDelCarrito" method="post" class="d-inline">
+                                        <input type="hidden" name="idMedicamento" value="@item.IdMedicamento" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- RESUMEN DE COMPRA -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg sticky-top" style="border-radius: 1.5rem; top: 100px;">
+                    <div class="card-header text-white border-0 text-center py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-receipt me-2"></i>Resumen de Compra
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Productos:</span>
+                                <span class="fw-bold">@Model.Count</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Unidades:</span>
+                                <span class="fw-bold">@Model.Sum(x => x.Cantidad)</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal:</span>
+                                <span class="fw-bold">S/. @Model.Sum(x => x.Total).ToString("0.00")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Envío:</span>
+                                <span class="badge bg-success">GRATIS</span>
+                            </div>
+                        </div>
+
+                        <hr class="my-3" />
+
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="fw-bold">TOTAL:</h5>
+                            <h4 class="fw-bold" style="color: var(--color-primary);">
+                                S/. @Model.Sum(x => x.Total).ToString("0.00")
+                            </h4>
+                        </div>
+
+                        <form asp-controller="Venta" asp-action="ProcesarCompra" method="post">
+                            <button type="submit" class="btn btn-gradient-primary w-100 btn-lg py-3 mb-3">
+                                <i class="bi bi-credit-card me-2"></i>Procesar Compra
+                            </button>
+                        </form>
+
+                        <a asp-controller="Catalogo" asp-action="Medicamentos" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+                        </a>
+
+                        <!-- INFORMACIÓN ADICIONAL -->
+                        <div class="mt-4 p-3 rounded" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);">
+                            <small class="text-muted d-block mb-2">
+                                <i class="bi bi-shield-check text-success me-1"></i> Compra 100% segura
+                            </small>
+                            <small class="text-muted d-block mb-2">
+                                <i class="bi bi-truck text-primary me-1"></i> Envío gratis en compras mayores a S/. 50
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-arrow-clockwise text-info me-1"></i> Devoluciones fáciles
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 </div>

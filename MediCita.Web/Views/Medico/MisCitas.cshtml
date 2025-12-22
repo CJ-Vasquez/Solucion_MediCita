@@ -1,0 +1,193 @@
+@model List<MediCita.Web.Entidades.Cita>
+@{
+    ViewData["Title"] = "Mis Citas - Médico";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-calendar-check"></i> Gestión de Citas</h2>
+        <a asp-controller="Medico" asp-action="Dashboard" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Filtros -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="searchCita" class="form-control border-0" placeholder="Buscar por paciente...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="filterFecha">
+                            <option value="">Todas las Fechas</option>
+                            <option value="hoy">Hoy</option>
+                            <option value="semana">Esta Semana</option>
+                            <option value="mes">Este Mes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Citas -->
+        <div class="row g-4" id="citasContainer">
+            @foreach (var cita in Model.OrderBy(c => c.FechaCita))
+            {
+                var isToday = cita.FechaCita.Date == DateTime.Today;
+                var isPast = cita.FechaCita < DateTime.Now;
+                var isFuture = cita.FechaCita > DateTime.Now;
+                
+                <div class="col-md-6 col-lg-4 cita-card" data-paciente="@cita.NombreMedico?.ToLower()" data-fecha="@cita.FechaCita.ToString("yyyy-MM-dd")">
+                    <div class="card h-100 border-0 shadow-sm hover-up @(isToday ? "border-warning border-3" : "")">
+                        @if (isToday)
+                        {
+                            <div class="card-header bg-warning text-dark text-center fw-bold py-2">
+                                <i class="bi bi-alarm"></i> CITA DE HOY
+                            </div>
+                        }
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">
+                                        <i class="bi bi-person-circle text-primary"></i>
+                                        @cita.NombreMedico
+                                    </h5>
+                                    <p class="text-muted small mb-0">
+                                        <i class="bi bi-heart-pulse"></i> @cita.NombreEspecialidad
+                                    </p>
+                                </div>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-clock"></i> Pendiente
+                                </span>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar3 text-primary me-2"></i>
+                                    <strong>Fecha:</strong> <span class="ms-2">@cita.FechaCita.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock text-primary me-2"></i>
+                                    <strong>Hora:</strong> <span class="ms-2">@cita.FechaCita.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+
+                            @if (isPast)
+                            {
+                                <div class="alert alert-danger py-2 px-3 mb-3 small">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Cita vencida - Actualizar estado
+                                </div>
+                            }
+                            else if (isToday)
+                            {
+                                <div class="alert alert-warning py-2 px-3 mb-3 small">
+                                    <i class="bi bi-alarm"></i>
+                                    ¡Cita programada para hoy!
+                                </div>
+                            }
+                            else if (isFuture)
+                            {
+                                <div class="alert alert-info py-2 px-3 mb-3 small">
+                                    <i class="bi bi-info-circle"></i>
+                                    Faltan @((cita.FechaCita - DateTime.Now).Days) día(s)
+                                </div>
+                            }
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success btn-sm" onclick="marcarAtendida(@cita.IdCita)">
+                                    <i class="bi bi-check-circle"></i> Marcar como Atendida
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-calendar-check display-1 text-muted"></i>
+                <h4 class="mt-4 text-muted">No tienes citas pendientes</h4>
+                <p class="text-muted">Todas tus citas han sido atendidas. ¡Excelente trabajo!</p>
+                <a asp-controller="Medico" asp-action="Dashboard" class="btn btn-primary mt-3">
+                    <i class="bi bi-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    // Búsqueda en tiempo real
+    document.getElementById('searchCita')?.addEventListener('keyup', function() {
+        filtrarCitas();
+    });
+
+    document.getElementById('filterFecha')?.addEventListener('change', function() {
+        filtrarCitas();
+    });
+
+    function filtrarCitas() {
+        const searchTerm = document.getElementById('searchCita').value.toLowerCase();
+        const fechaFiltro = document.getElementById('filterFecha').value;
+        const cards = document.querySelectorAll('.cita-card');
+        const hoy = new Date();
+        
+        cards.forEach(card => {
+            const paciente = card.getAttribute('data-paciente') || '';
+            const fechaStr = card.getAttribute('data-fecha');
+            const fechaCita = new Date(fechaStr);
+            
+            const matchSearch = paciente.includes(searchTerm);
+            let matchFecha = true;
+            
+            if (fechaFiltro === 'hoy') {
+                matchFecha = fechaCita.toDateString() === hoy.toDateString();
+            } else if (fechaFiltro === 'semana') {
+                const unaSemana = new Date(hoy);
+                unaSemana.setDate(hoy.getDate() + 7);
+                matchFecha = fechaCita >= hoy && fechaCita <= unaSemana;
+            } else if (fechaFiltro === 'mes') {
+                matchFecha = fechaCita.getMonth() === hoy.getMonth() && fechaCita.getFullYear() === hoy.getFullYear();
+            }
+            
+            if (matchSearch && matchFecha) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function marcarAtendida(idCita) {
+        if (confirm('¿Confirmas que has atendido esta cita?')) {
+            // Aquí iría la lógica para actualizar el estado de la cita
+            alert('Funcionalidad en desarrollo. IdCita: ' + idCita);
+        }
+    }
+</script>
+}
+
+<style>
+    .hover-up {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hover-up:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+</style>

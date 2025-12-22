@@ -1,0 +1,230 @@
+@model List<MediCita.Web.Entidades.Cita>
+@{
+    ViewData["Title"] = "Dashboard - Médico";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
+        <h1 class="h3 mb-0 text-gray-800 text-primary fw-bold">
+            <i class="bi bi-person-badge"></i> Panel del Médico
+        </h1>
+        <div>
+            <span class="badge bg-success fs-6 me-2">
+                <i class="bi bi-circle-fill"></i> En Línea
+            </span>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="row">
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 border-primary border-3 border-start border-0">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Citas Pendientes</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@ViewBag.CitasPendientes</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-calendar-check-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 border-success border-3 border-start border-0">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Citas para Hoy</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@ViewBag.CitasHoy</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-clock-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Médico -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
+                                <i class="bi bi-person-badge fs-1"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1">Bienvenido, Dr(a). @User.Identity.Name</h4>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-calendar-event"></i> Hoy es @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis Citas Pendientes -->
+    <h4 class="mb-3 text-muted"><i class="bi bi-calendar-event"></i> Citas Pendientes por Atender</h4>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-calendar3"></i> Fecha y Hora</th>
+                                <th><i class="bi bi-person"></i> Paciente</th>
+                                <th><i class="bi bi-heart-pulse"></i> Especialidad</th>
+                                <th><i class="bi bi-info-circle"></i> Estado</th>
+                                <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cita in Model.OrderBy(c => c.FechaCita))
+                            {
+                                var isToday = cita.FechaCita.Date == DateTime.Today;
+                                var isPast = cita.FechaCita < DateTime.Now;
+                                
+                                <tr class="@(isToday ? "table-warning" : "")">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (isToday)
+                                            {
+                                                <span class="badge bg-warning text-dark me-2">HOY</span>
+                                            }
+                                            <div>
+                                                <strong>@cita.FechaCita.ToString("dd/MM/yyyy")</strong><br />
+                                                <small class="text-muted">@cita.FechaCita.ToString("HH:mm")</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-person-circle text-primary"></i>
+                                        @cita.NombreMedico
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@cita.NombreEspecialidad</span>
+                                    </td>
+                                    <td>
+                                        @if (isPast)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-triangle"></i> Vencida
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Pendiente
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Marcar como Atendida">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver Detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-check display-1 text-muted"></i>
+                    <h5 class="mt-3 text-muted">No tienes citas pendientes</h5>
+                    <p class="text-muted">Todas tus citas han sido atendidas. ¡Excelente trabajo!</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Recordatorios y Notas -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="bi bi-bell"></i> Recordatorios
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info py-2 px-3 small mb-2">
+                        <i class="bi bi-info-circle"></i>
+                        Tienes @ViewBag.CitasHoy cita(s) programada(s) para hoy
+                    </div>
+                    @if (ViewBag.CitasPendientes > 5)
+                    {
+                        <div class="alert alert-warning py-2 px-3 small mb-2">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Tienes muchas citas pendientes. Considera revisar tu agenda.
+                        </div>
+                    }
+                    <div class="alert alert-success py-2 px-3 small mb-0">
+                        <i class="bi bi-check-circle"></i>
+                        Mantén actualizada tu disponibilidad
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="m-0 fw-bold text-success">
+                        <i class="bi bi-graph-up"></i> Estadísticas
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Citas del Mes</span>
+                            <span class="fw-bold">@Model?.Count</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: @(Model?.Count > 0 ? Math.Min((Model.Count * 100 / 50), 100) : 0)%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Citas de Hoy</span>
+                            <span class="fw-bold">@ViewBag.CitasHoy</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: @(ViewBag.CitasHoy > 0 ? Math.Min((ViewBag.CitasHoy * 100 / 10), 100) : 0)%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Continúa brindando un excelente servicio</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Inicializar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+}

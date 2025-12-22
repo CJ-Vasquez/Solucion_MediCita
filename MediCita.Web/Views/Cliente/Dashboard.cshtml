@@ -1,0 +1,194 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Mi Dashboard";
+    int totalCitas = ViewBag.TotalCitas ?? 0;
+    int citasPendientes = ViewBag.CitasPendientes ?? 0;
+    int misCompras = ViewBag.MisCompras ?? 0;
+    decimal totalGastado = ViewBag.TotalGastado ?? 0;
+}
+
+<div class="container-fluid py-5" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);">
+    <!-- HEADER -->
+    <div class="mb-5">
+        <h1 class="display-5 fw-bold" style="color: #667eea;">
+            <i class="bi bi-speedometer2 me-3"></i>Mi Dashboard
+        </h1>
+        <p class="text-muted">Bienvenido de nuevo, <strong>@User.Identity.Name</strong></p>
+    </div>
+
+    <!-- TARJETAS DE ESTADÍSTICAS -->
+    <div class="row g-4 mb-5">
+        <!-- TOTAL DE CITAS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #667eea !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted text-uppercase fw-bold small mb-2">Total de Citas</p>
+                            <h2 class="fw-bold mb-0" style="color: #2c3e50;">@totalCitas</h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-calendar-check fs-2" style="color: #667eea;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CITAS PENDIENTES -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #f39c12 !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted text-uppercase fw-bold small mb-2">Citas Pendientes</p>
+                            <h2 class="fw-bold mb-0" style="color: #2c3e50;">@citasPendientes</h2>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-clock-history fs-2 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIS COMPRAS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #27ae60 !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted text-uppercase fw-bold small mb-2">Mis Compras</p>
+                            <h2 class="fw-bold mb-0" style="color: #2c3e50;">@misCompras</h2>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-bag-check fs-2 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTAL GASTADO -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #3498db !important;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted text-uppercase fw-bold small mb-2">Total Gastado</p>
+                            <h2 class="fw-bold mb-0" style="color: #2c3e50;">S/. @totalGastado.ToString("N2")</h2>
+                        </div>
+                        <div class="bg-info bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-currency-dollar fs-2 text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESO RÁPIDO -->
+    <div class="mb-4">
+        <h4 class="fw-bold mb-4" style="color: #2c3e50;">
+            <i class="bi bi-lightning-charge me-2" style="color: #667eea;"></i>Acceso Rápido
+        </h4>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <!-- AGENDAR CITA -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-4 text-white">
+                    <div class="mb-3">
+                        <i class="bi bi-calendar-plus fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Agendar Cita</h5>
+                    <p class="mb-3 opacity-90">Agenda una nueva cita médica con nuestros especialistas.</p>
+                    <a asp-controller="Citas" asp-action="Index" class="btn btn-light fw-bold">
+                        Agendar Cita <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPRAR MEDICAMENTOS -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="card-body p-4 text-white">
+                    <div class="mb-3">
+                        <i class="bi bi-capsule fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Comprar Medicamentos</h5>
+                    <p class="mb-3 opacity-90">Explora nuestro catálogo de medicamentos y realiza tu compra.</p>
+                    <a asp-controller="Venta" asp-action="Catalogo" class="btn btn-light fw-bold">
+                        Ir a la Botica <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIS HISTORIALES -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 hover-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body p-4 text-white">
+                    <div class="mb-3">
+                        <i class="bi bi-clock-history fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Mis Historiales</h5>
+                    <p class="mb-3 opacity-90">Revisa el historial completo de tus citas y compras anteriores.</p>
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Cliente" asp-action="MisCitas" class="btn btn-light btn-sm fw-bold">
+                            <i class="bi bi-calendar-check me-1"></i>Historial de Citas
+                        </a>
+                        <a asp-controller="Cliente" asp-action="MisCompras" class="btn btn-light btn-sm fw-bold">
+                            <i class="bi bi-bag-check me-1"></i>Historial de Compras
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MIS PRÓXIMAS CITAS -->
+    <div class="mb-4">
+        <h4 class="fw-bold" style="color: #2c3e50;">
+            <i class="bi bi-calendar2-event me-2" style="color: #667eea;"></i>Mis Próximas Citas
+        </h4>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 text-center">
+            <div class="py-5">
+                <i class="bi bi-calendar-x text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                <h5 class="text-muted mt-3 mb-2">No tienes citas próximas registradas</h5>
+                <p class="text-muted small">Agenda tu primera cita con nuestros especialistas</p>
+                <a asp-controller="Citas" asp-action="Index" class="btn btn-gradient-primary mt-2">
+                    <i class="bi bi-calendar-plus me-2"></i>Agendar Primera Cita
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+        }
+
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+</style>

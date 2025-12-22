@@ -1,61 +1,92 @@
-using MediCita.Web.Servicios.Contrato;
+Ôªøusing MediCita.Web.Servicios.Contrato;
 using MediCita.Web.Servicios.Implementacion;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Agregar servicios al contenedor.
+// ========================================
+// 1. SERVICIOS MVC
+// ========================================
 builder.Services.AddControllersWithViews();
 
-// 2. InyecciÛn de Dependencias (Tus servicios)
+// ========================================
+// 2. INYECCI√ìN DE DEPENDENCIAS (Servicios)
+// ========================================
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
-builder.Services.AddScoped<IVentaService, VentaService>(); // Si ya creaste este servicio
+builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IEspecialidadService, EspecialidadService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
-builder.Services.AddScoped<IMedicoService, MedicoService>(); // Servicio de MÈdicos
+builder.Services.AddScoped<IMedicoService, MedicoService>();
+builder.Services.AddScoped<IRolService, RolService>();
 
-// 3. ConfiguraciÛn de AutenticaciÛn (Login)
+// ========================================
+// 3. AUTENTICACI√ìN POR COOKIES (Login)
+// ========================================
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(option =>
+    .AddCookie(options =>
     {
-        option.LoginPath = "/Acceso/Login";
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.LoginPath = "/Acceso/Login";
+        options.AccessDeniedPath = "/Acceso/Login";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Duraci√≥n del login
+        options.SlidingExpiration = true; // Renueva autom√°ticamente
     });
 
-// 4. ConfiguraciÛn de SesiÛn (CARRITO) <--- °ESTO ES LO QUE FALTABA!
-builder.Services.AddDistributedMemoryCache();
+// ========================================
+// 4. CONFIGURACI√ìN DE SESI√ìN (Carrito)
+// ========================================
+builder.Services.AddDistributedMemoryCache(); // Requerido para sesi√≥n
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // DuraciÛn de la sesiÛn
+    options.IdleTimeout = TimeSpan.FromHours(2); // Duraci√≥n del carrito
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".MediCita.Session";
 });
 
+// ========================================
+// 5. ACCESO A HttpContext (Para leer sesi√≥n en vistas)
+// ========================================
+builder.Services.AddHttpContextAccessor();
+
+// ========================================
+// CONSTRUIR LA APLICACI√ìN
+// ========================================
 var app = builder.Build();
 
-// --- ZONA DEL MIDDLEWARE (TuberÌa de peticiones) ---
+// ========================================
+// CONFIGURACI√ìN DEL PIPELINE (Middleware)
+// ========================================
 
+// Manejo de errores
 if (!app.Environment.IsDevelopment())
 {
-    // app.UseExceptionHandler("/Home/Error"); // Comentamos esto porque borramos la vista Error
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage(); // Errores detallados en desarrollo
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); // CSS, JS, im√°genes
 
 app.UseRouting();
 
-// 5. Activar AutenticaciÛn y AutorizaciÛn
-app.UseAuthentication();
-app.UseAuthorization();
+// ‚ö†Ô∏è ORDEN CR√çTICO: Autenticaci√≥n ‚Üí Autorizaci√≥n ‚Üí Sesi√≥n
+app.UseAuthentication(); // 1. Login/Cookies
+app.UseAuthorization();  // 2. Roles ([Authorize])
+app.UseSession();        // 3. Carrito/Sesi√≥n
 
-// 6. Activar SesiÛn <--- Esto fallaba porque faltaba el paso 4 arriba
-app.UseSession();
-
+// ========================================
+// RUTAS
+// ========================================
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// ========================================
+// INICIAR APLICACI√ìN
+// ========================================
 app.Run();

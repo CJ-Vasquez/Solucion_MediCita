@@ -1,180 +1,59 @@
 @model List<MediCita.Web.Entidades.Especialidad>
 @{
     ViewData["Title"] = "Especialidades Médicas";
-    var medicosPorEsp = ViewBag.MedicosPorEspecialidad as Dictionary<int, int> ?? new Dictionary<int, int>();
 }
 
-<div class="container-fluid py-5">
-    <div class="section-header fade-in">
-        <h2>
-            <i class="bi bi-heart-pulse-fill"></i> Especialidades Médicas
-        </h2>
-        <div class="section-divider"></div>
-        <p class="lead">Contamos con las mejores especialidades médicas para cuidar tu salud</p>
+<div class="container-fluid py-5" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);">
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <div class="mb-3">
+            <i class="bi bi-heart-pulse" style="font-size: 3.5rem; color: var(--color-primary);"></i>
+        </div>
+        <h1 class="display-5 fw-bold mb-3">Especialidades Médicas</h1>
+        <div class="mx-auto mb-3" style="width: 100px; height: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px;"></div>
+        <p class="lead text-muted">Contamos con las mejores especialidades médicas para cuidar tu salud</p>
     </div>
 
-    @if (TempData["Error"] != null)
+    @if (TempData["Mensaje"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+        <div class="alert alert-success alert-dismissible fade show shadow-sm">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Mensaje"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm text-center p-4 hover-up">
-                <div class="display-4 text-primary mb-2">
-                    <i class="bi bi-hospital-fill"></i>
-                </div>
-                <h3 class="fw-bold text-primary">@Model.Count</h3>
-                <p class="text-muted mb-0">Especialidades Disponibles</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm text-center p-4 hover-up">
-                <div class="display-4 text-success mb-2">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <h3 class="fw-bold text-success">@medicosPorEsp.Values.Sum()</h3>
-                <p class="text-muted mb-0">Médicos Especialistas</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm text-center p-4 hover-up">
-                <div class="display-4 text-info mb-2">
-                    <i class="bi bi-calendar-check-fill"></i>
-                </div>
-                <h3 class="fw-bold text-info">24/7</h3>
-                <p class="text-muted mb-0">Atención Disponible</p>
-            </div>
-        </div>
-    </div>
-
+    <!-- GRID DE ESPECIALIDADES -->
     <div class="row g-4">
-        @if (Model.Count == 0)
+        @foreach (var especialidad in Model.OrderBy(e => e.NombreEspec))
         {
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                <h4 class="text-muted">No hay especialidades disponibles</h4>
-            </div>
-        }
-        else
-        {
-            @foreach (var especialidad in Model.OrderBy(e => e.NombreEspec))
-            {
-                var cantidadMedicos = medicosPorEsp.ContainsKey(especialidad.IdEspecialidad) ? medicosPorEsp[especialidad.IdEspecialidad] : 0;
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="card specialty-card h-100 border-0 shadow-sm">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="specialty-icon flex-shrink-0 me-3">
-                                    <i class="bi bi-heart-pulse fs-1 text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h4 class="card-title fw-bold mb-2">@especialidad.NombreEspec</h4>
-                                    <span class="badge bg-primary">@cantidadMedicos Especialistas</span>
-                                </div>
-                            </div>
-                            
-                            <p class="card-text text-muted mb-4" style="min-height: 80px;">
-                                @if (!string.IsNullOrEmpty(especialidad.Descripcion))
-                                {
-                                    @especialidad.Descripcion
-                                }
-                                else
-                                {
-                                    <text>Especialidad médica dedicada al diagnóstico, tratamiento y prevención de enfermedades.</text>
-                                }
-                            </p>
-                            
-                            <div class="mb-4">
-                                <h6 class="fw-bold mb-2">
-                                    <i class="bi bi-check-circle text-success"></i> Servicios:
-                                </h6>
-                                <ul class="list-unstyled small">
-                                    <li class="mb-1"><i class="bi bi-chevron-right text-primary"></i> Consulta médica especializada</li>
-                                    <li class="mb-1"><i class="bi bi-chevron-right text-primary"></i> Diagnóstico y evaluación</li>
-                                    <li class="mb-1"><i class="bi bi-chevron-right text-primary"></i> Tratamiento personalizado</li>
-                                    <li class="mb-1"><i class="bi bi-chevron-right text-primary"></i> Seguimiento continuo</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="d-grid gap-2">
-                                <a asp-controller="Catalogo" asp-action="Medicos" asp-route-especialidad="@especialidad.NombreEspec" class="btn btn-primary">
-                                    <i class="bi bi-people"></i> Ver Especialistas (@cantidadMedicos)
-                                </a>
-                                <a asp-controller="Citas" asp-action="Index" class="btn btn-outline-success">
-                                    <i class="bi bi-calendar-plus"></i> Reservar Cita
-                                </a>
-                            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <i class="bi bi-heart-pulse-fill" style="font-size: 4rem; color: var(--color-primary);"></i>
                         </div>
+                        <h5 class="card-title fw-bold mb-3">@especialidad.NombreEspec</h5>
+                        <p class="text-muted small mb-4">
+                            Atención especializada con los mejores profesionales
+                        </p>
+                        <a asp-controller="Catalogo" asp-action="Medicos" asp-route-especialidad="@especialidad.NombreEspec"
+                           class="btn btn-gradient-primary w-100">
+                            <i class="bi bi-people me-2"></i>Ver Médicos
+                        </a>
                     </div>
                 </div>
-            }
+            </div>
         }
-    </div>
-
-    <div class="row mt-5 pt-5 border-top">
-        <div class="col-12 text-center mb-4">
-            <h3 class="fw-bold">¿Por qué elegir MediCita?</h3>
-            <p class="text-muted">Nuestro compromiso con tu salud</p>
-        </div>
-        <div class="col-md-3 text-center">
-            <div class="p-4">
-                <i class="bi bi-award-fill display-3 text-warning mb-3"></i>
-                <h5 class="fw-bold">Excelencia Médica</h5>
-                <p class="text-muted">Los mejores profesionales en cada especialidad</p>
-            </div>
-        </div>
-        <div class="col-md-3 text-center">
-            <div class="p-4">
-                <i class="bi bi-hospital-fill display-3 text-primary mb-3"></i>
-                <h5 class="fw-bold">Instalaciones Modernas</h5>
-                <p class="text-muted">Tecnología de punta para tu atención</p>
-            </div>
-        </div>
-        <div class="col-md-3 text-center">
-            <div class="p-4">
-                <i class="bi bi-calendar-check-fill display-3 text-success mb-3"></i>
-                <h5 class="fw-bold">Atención Inmediata</h5>
-                <p class="text-muted">Citas disponibles en el menor tiempo posible</p>
-            </div>
-        </div>
-        <div class="col-md-3 text-center">
-            <div class="p-4">
-                <i class="bi bi-shield-check-fill display-3 text-info mb-3"></i>
-                <h5 class="fw-bold">Seguridad Garantizada</h5>
-                <p class="text-muted">Protocolos de bioseguridad certificados</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card bg-gradient-primary text-white text-center p-5">
-                <div class="card-body">
-                    <h3 class="fw-bold mb-3">¿Necesitas atención médica?</h3>
-                    <p class="lead mb-4">Agenda tu cita con nuestros especialistas y recibe la mejor atención</p>
-                    <a asp-controller="Citas" asp-action="Index" class="btn btn-light btn-lg px-5">
-                        <i class="bi bi-calendar-plus"></i> Reservar Cita Ahora
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.specialty-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('fade-in');
-                }, index * 100);
-            });
-        });
-    </script>
-}
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+        }
+</style>

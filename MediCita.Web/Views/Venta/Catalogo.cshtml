@@ -3,52 +3,186 @@
     ViewData["Title"] = "Catálogo de Farmacia";
 }
 
-<div class="container mt-4">
-    <h2 class="text-primary mb-4"><i class="bi bi-shop"></i> Catálogo de Medicamentos</h2>
-
-    @if (TempData["Mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Mensaje"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="container-fluid py-5" style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);">
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <div class="mb-3">
+            <i class="bi bi-shop" style="font-size: 3.5rem; color: var(--color-primary);"></i>
         </div>
-    }
-    @if (TempData["Exito"] != null)
-    {
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            @TempData["Exito"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <div class="d-flex justify-content-end mb-3">
-        <a asp-action="Carrito" class="btn btn-warning position-relative">
-            <i class="bi bi-cart-fill"></i> Ver Carrito
-        </a>
+        <h1 class="display-5 fw-bold mb-3">Catálogo de Farmacia</h1>
+        <div class="mx-auto mb-3" style="width: 100px; height: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px;"></div>
+        <p class="lead text-muted">Encuentra los mejores medicamentos al mejor precio</p>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- BUSCADOR -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-2">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchMedicamento" class="form-control border-0"
+                               placeholder="Buscar medicamento..." style="font-size: 1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRID DE MEDICAMENTOS -->
+    <div class="row g-4" id="catalogoMedicamentos">
+        @{
+            int contador = 1;
+        }
         @foreach (var item in Model)
         {
-            <div class="col">
-                <div class="card h-100 shadow-sm border-primary">
-                    <div class="card-header bg-transparent border-primary text-center">
-                        <h5 class="card-title text-primary">@item.Nombre</h5>
+            // medicina1.jpg, medicina2.jpg, etc.
+            var imageUrl = $"/images/medicinas/medicina{contador}.jpg";
+            var fallbackUrl = $"https://via.placeholder.com/400x300/667eea/ffffff?text={Uri.EscapeDataString(item.Nombre.Substring(0, Math.Min(12, item.Nombre.Length)))}";
+
+            <div class="col-lg-3 col-md-4 col-sm-6 medicamento-card">
+                <div class="card border-0 shadow-sm h-100 hover-card">
+                    <!-- Badge de disponibilidad -->
+                    <div class="position-absolute top-0 end-0 p-3" style="z-index: 1;">
+                        @if (item.Stock > 0)
+                        {
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>Disponible
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger rounded-pill px-3 py-2">
+                                <i class="bi bi-x-circle me-1"></i>Agotado
+                            </span>
+                        }
                     </div>
-                    <div class="card-body text-center">
-                        <h6 class="card-subtitle mb-2 text-muted">@item.Laboratorio</h6>
-                        <h3 class="text-success fw-bold">S/. @item.Precio</h3>
-                        <p class="card-text">Stock disponible: <strong>@item.Stock</strong></p>
+
+                    <!-- Imagen -->
+                    <div class="d-flex align-items-center justify-content-center p-0"
+                         style="height: 200px; background: #f8f9fa;">
+                        <img src="@imageUrl"
+                             alt="@item.Nombre"
+                             style="max-height: 100%; max-width: 100%; object-fit: cover;"
+                             onerror="this.onerror=null;this.src='@fallbackUrl';">
                     </div>
-                    <div class="card-footer bg-transparent border-primary">
-                        <form asp-action="AgregarCarrito" method="post" class="d-flex gap-2">
+
+                    <!-- Contenido -->
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-2 text-truncate medicamento-nombre"
+                            title="@item.Nombre">
+                            @item.Nombre
+                        </h5>
+                        <p class="card-text text-muted small mb-3 medicamento-laboratorio">
+                            <i class="bi bi-building me-1"></i>@item.Laboratorio
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="text-muted small d-block">Precio</span>
+                                <span class="fs-4 fw-bold" style="color: var(--color-primary);">
+                                    S/. @item.Precio.ToString("0.00")
+                                </span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-muted small">Stock</span>
+                                <div class="fw-bold">@item.Stock</div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario de agregar -->
+                        <form asp-controller="Venta" asp-action="AgregarCarrito" method="post">
                             <input type="hidden" name="idMedicamento" value="@item.IdMedicamento" />
-                            <input type="number" name="cantidad" class="form-control" value="1" min="1" max="@item.Stock" style="width: 80px;" />
-                            <button type="submit" class="btn btn-primary flex-grow-1">Agregar</button>
+
+                            <div class="input-group mb-2">
+                                <button type="button" class="btn btn-outline-secondary"
+                                        onclick="decrementarCantidad(this)" @(item.Stock == 0 ? "disabled" : "")>
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" name="cantidad" value="1" min="1" max="@item.Stock"
+                                       class="form-control text-center cantidad-input"
+                                       @(item.Stock == 0 ? "disabled" : "") readonly>
+                                <button type="button" class="btn btn-outline-secondary"
+                                        onclick="incrementarCantidad(this, @item.Stock)" @(item.Stock == 0 ? "disabled" : "")>
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+
+                            <button type="submit" class="btn btn-gradient-primary w-100" @(item.Stock == 0 ? "disabled" : "")>
+                                <i class="bi bi-cart-plus me-2"></i>Agregar al Carrito
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
+
+            contador++;
         }
     </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+            <p class="text-muted mt-3">No hay medicamentos disponibles</p>
+        </div>
+    }
 </div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+        }
+
+    .cantidad-input {
+        pointer-events: none;
+        background-color: white !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Buscar medicamentos
+        document.getElementById('searchMedicamento').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.medicamento-card');
+
+            cards.forEach(card => {
+                const nombre = card.querySelector('.medicamento-nombre').textContent.toLowerCase();
+                const laboratorio = card.querySelector('.medicamento-laboratorio').textContent.toLowerCase();
+
+                if (nombre.includes(searchTerm) || laboratorio.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Incrementar cantidad
+        function incrementarCantidad(btn, max) {
+            const input = btn.parentElement.querySelector('.cantidad-input');
+            let value = parseInt(input.value);
+            if (value < max) {
+                input.value = value + 1;
+            }
+        }
+
+        // Decrementar cantidad
+        function decrementarCantidad(btn) {
+            const input = btn.parentElement.querySelector('.cantidad-input');
+            let value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+    </script>
+}

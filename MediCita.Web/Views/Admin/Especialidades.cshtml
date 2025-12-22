@@ -1,0 +1,85 @@
+@model List<MediCita.Web.Entidades.Especialidad>
+@{
+    ViewData["Title"] = "Gestión de Especialidades";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #667eea;">
+            <i class="bi bi-heart-pulse me-2"></i>Especialidades Médicas
+        </h2>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                var imageUrl = $"/images/especialidades/{item.IdEspecialidad}.jpg";
+                var fallbackUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(item.NombreEspec ?? "")}&background=667eea&color=fff&size=400&bold=true";
+
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="position-relative overflow-hidden">
+                            <img src="@imageUrl"
+                                 class="card-img-top"
+                                 alt="@item.NombreEspec"
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.onerror=null;this.src='@fallbackUrl';">
+                            <div class="position-absolute top-0 end-0 p-2">
+                                <span class="badge bg-primary px-3 py-2">ID: @item.IdEspecialidad</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-heart-pulse-fill" style="font-size: 2.5rem; color: #667eea;"></i>
+                            </div>
+                            <h5 class="card-title fw-bold mb-3">
+                                @item.NombreEspec
+                            </h5>
+                            
+                            @if (!string.IsNullOrEmpty(item.Descripcion))
+                            {
+                                <p class="text-muted small">@item.Descripcion</p>
+                            }
+                            else
+                            {
+                                <p class="text-muted small">Especialidad médica profesional con atención de calidad</p>
+                            }
+
+                            <div class="d-grid gap-2 mt-3">
+                                <a asp-controller="Catalogo" asp-action="Medicos" asp-route-especialidad="@item.NombreEspec" 
+                                   class="btn btn-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <i class="bi bi-people me-1"></i>Ver Médicos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 text-muted"></i>
+                        <h4 class="text-muted">No hay especialidades registradas</h4>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+    }
+</style>

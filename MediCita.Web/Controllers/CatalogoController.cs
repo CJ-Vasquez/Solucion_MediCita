@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using MediCita.Web.Servicios.Contrato;
 using MediCita.Web.Entidades;
+using MediCita.Web.Servicios.Contrato;
 
 namespace MediCita.Web.Controllers
 {
@@ -11,7 +11,7 @@ namespace MediCita.Web.Controllers
         private readonly IEspecialidadService _especialidadService;
 
         public CatalogoController(
-            IMedicamentoService medicamentoService, 
+            IMedicamentoService medicamentoService,
             IMedicoService medicoService,
             IEspecialidadService especialidadService)
         {
@@ -20,91 +20,61 @@ namespace MediCita.Web.Controllers
             _especialidadService = especialidadService;
         }
 
-        // GET: Catálogo de Medicamentos (Botica)
+        // Botica pública
         public async Task<IActionResult> Medicamentos()
         {
             try
             {
-                var medicamentos = await _medicamentoService.Listar();
-                return View(medicamentos);
+                var lista = await _medicamentoService.Listar();
+                return View("Medicamentos", lista);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error al cargar el catálogo: " + ex.Message;
-                return View(new List<Medicamento>());
+                TempData["Error"] = "Error al cargar medicamentos: " + ex.Message;
+                return View("Medicamentos", new List<Medicamento>());
             }
         }
 
-        // GET: Catálogo de Médicos (con filtro opcional por especialidad)
-        public async Task<IActionResult> Medicos(string especialidad = null)
+        // Compatibilidad con enlaces antiguos
+        public IActionResult Catalogo() => RedirectToAction(nameof(Medicamentos));
+
+        // Médicos
+        public async Task<IActionResult> Medicos(string? especialidad = null)
         {
             try
             {
                 var medicos = await _medicoService.Listar();
-                
-                // Filtrar por especialidad si se proporciona
+
                 if (!string.IsNullOrEmpty(especialidad))
                 {
-                    medicos = medicos.Where(m => m.Especialidad != null && 
-                                                  m.Especialidad.NombreEspec.Equals(especialidad, StringComparison.OrdinalIgnoreCase))
-                                     .ToList();
+                    medicos = medicos
+                        .Where(m => (m.Especialidad?.NombreEspec ?? "").Equals(especialidad, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
                     ViewBag.EspecialidadFiltro = especialidad;
                 }
-                
-                // Obtener especialidades únicas - enfoque simple
-                var listaEspecialidades = new List<string>();
-                var todosLosMedicos = await _medicoService.Listar();
-                if (todosLosMedicos != null)
-                {
-                    foreach (var m in todosLosMedicos)
-                    {
-                        if (m != null && m.Especialidad != null)
-                        {
-                            var nombreEsp = m.Especialidad.NombreEspec;
-                            if (nombreEsp != null && !listaEspecialidades.Contains(nombreEsp))
-                            {
-                                listaEspecialidades.Add(nombreEsp);
-                            }
-                        }
-                    }
-                    listaEspecialidades.Sort();
-                }
-                
-                ViewBag.Especialidades = listaEspecialidades;
+
+                var especialidades = await _especialidadService.Listar();
+                ViewBag.Especialidades = especialidades.Select(e => e.NombreEspec).ToList();
                 return View(medicos);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error al cargar los médicos: " + ex.Message;
-                ViewBag.Especialidades = new List<string>();
+                TempData["Error"] = "Error al cargar médicos: " + ex.Message;
                 return View(new List<Medico>());
             }
         }
 
-        // GET: Catálogo de Especialidades
+        // Especialidades
         public async Task<IActionResult> Especialidades()
         {
             try
             {
                 var especialidades = await _especialidadService.Listar();
-                
-                // Obtener cantidad de médicos por especialidad
-                var medicos = await _medicoService.Listar();
-                var medicosPorEspecialidad = new Dictionary<int, int>();
-                
-                foreach (var esp in especialidades)
-                {
-                    var cantidad = medicos.Count(m => m.IdEspecialidad == esp.IdEspecialidad);
-                    medicosPorEspecialidad[esp.IdEspecialidad] = cantidad;
-                }
-                
-                ViewBag.MedicosPorEspecialidad = medicosPorEspecialidad;
                 return View(especialidades);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error al cargar las especialidades: " + ex.Message;
-                ViewBag.MedicosPorEspecialidad = new Dictionary<int, int>();
+                TempData["Error"] = "Error al cargar especialidades: " + ex.Message;
                 return View(new List<Especialidad>());
             }
         }

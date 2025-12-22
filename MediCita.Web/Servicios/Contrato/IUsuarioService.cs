@@ -4,13 +4,16 @@ namespace MediCita.Web.Servicios.Contrato
 {
     public interface IUsuarioService
     {
-        // Validar usuario existente (Login)
+        // Métodos existentes
         Task<Usuario> ValidarUsuario(string correo, string clave);
-        
-        // Registrar nuevo usuario (Cliente/Paciente)
         Task<bool> RegistrarCliente(Usuario usuario);
-        
-        // Verificar si el correo ya existe
         Task<bool> ExisteCorreo(string correo);
+
+        // Nuevos métodos para CRUD Admin
+        Task<List<Usuario>> Listar();
+        Task<Usuario> Obtener(int id);
+        Task<bool> Guardar(Usuario modelo);
+        Task<bool> Editar(Usuario modelo);
+        Task<bool> Eliminar(int id);
     }
 }
