@@ -29,7 +29,7 @@ namespace MediCita.Web.Servicios.Implementacion
                         // PASO 1: Insertar Cabecera (Venta)
                         SqlCommand cmdVenta = new SqlCommand("usp_RegistrarVenta", cn, transaction);
                         cmdVenta.CommandType = CommandType.StoredProcedure;
-                        cmdVenta.Parameters.AddWithValue("@IdPaciente", modelo.IdPaciente); // ✅ CORREGIDO
+                        cmdVenta.Parameters.AddWithValue("@IdPaciente", modelo.IdPaciente); 
                         cmdVenta.Parameters.AddWithValue("@Total", modelo.Total);
 
                         int idVentaGenerado = Convert.ToInt32(await cmdVenta.ExecuteScalarAsync());
@@ -42,7 +42,7 @@ namespace MediCita.Web.Servicios.Implementacion
                             cmdDetalle.Parameters.AddWithValue("@IdVenta", idVentaGenerado);
                             cmdDetalle.Parameters.AddWithValue("@IdMedicamento", item.IdMedicamento);
                             cmdDetalle.Parameters.AddWithValue("@Cantidad", item.Cantidad);
-                            cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario); // ✅ CORREGIDO
+                            cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario); 
                             cmdDetalle.Parameters.AddWithValue("@SubTotal", item.SubTotal);
 
                             await cmdDetalle.ExecuteNonQueryAsync();
@@ -68,7 +68,7 @@ namespace MediCita.Web.Servicios.Implementacion
             List<Venta> lista = new List<Venta>();
             using (SqlConnection cn = new SqlConnection(_configuration.GetConnectionString("CadenaSQL")))
             {
-                // ✅ CORREGIDO: IdUsuario → IdPaciente
+                
                 SqlCommand cmd = new SqlCommand(
                     "SELECT IdVenta, IdPaciente, Total, FechaVenta " +
                     "FROM tb_Ventas " +
@@ -85,7 +85,7 @@ namespace MediCita.Web.Servicios.Implementacion
                         lista.Add(new Venta()
                         {
                             IdVenta = Convert.ToInt32(dr["IdVenta"]),
-                            IdPaciente = Convert.ToInt32(dr["IdPaciente"]), // ✅ CORREGIDO
+                            IdPaciente = Convert.ToInt32(dr["IdPaciente"]), 
                             Total = Convert.ToDecimal(dr["Total"]),
                             FechaVenta = dr["FechaVenta"] != DBNull.Value
                                 ? Convert.ToDateTime(dr["FechaVenta"])

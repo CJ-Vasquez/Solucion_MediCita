@@ -122,7 +122,7 @@ namespace MediCita.Web.Controllers
                     NombreCompleto = nombreCompleto,
                     Correo = correo,
                     Clave = clave,
-                    IdRol = 3 // Paciente
+                    IdRol = 3 // Paciente, solo creara usuarios con rol paciente
                 };
 
                 bool respuesta = await _usuarioService.RegistrarCliente(nuevoUsuario);
@@ -163,10 +163,10 @@ namespace MediCita.Web.Controllers
         {
             List<Claim> claims = new List<Claim>()
             {
-                // ✅ ClaimTypes.NameIdentifier = ID del usuario (lo que busca ClienteController)
+                // ClaimTypes.NameIdentifier = ID del usuario (lo que busca ClienteController)
                 new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
                 
-                // ✅ Datos del usuario
+                // Datos del usuario
                 new Claim(ClaimTypes.Name, usuario.NombreCompleto ?? "Usuario"),
                 new Claim(ClaimTypes.Email, usuario.Correo ?? ""),
                 new Claim(ClaimTypes.Role, usuario.NombreRol ?? "Paciente")
@@ -178,7 +178,7 @@ namespace MediCita.Web.Controllers
             {
                 AllowRefresh = true,
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24) // ✅ Cookie válida por 24 horas
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24) // Cookie válida por 24 horas
             };
 
             await HttpContext.SignInAsync(

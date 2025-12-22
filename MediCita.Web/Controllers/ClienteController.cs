@@ -19,7 +19,7 @@ namespace MediCita.Web.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            // ✅ CORREGIDO: Usar ClaimTypes.NameIdentifier
+            // Usar ClaimTypes.NameIdentifier
             int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
 
             if (idUsuario == 0)
@@ -36,7 +36,7 @@ namespace MediCita.Web.Controllers
             ViewBag.TotalCompras = compras.Count;
             ViewBag.TotalGastado = compras.Sum(v => v.Total);
 
-            // ✅ CORREGIDO: Filtrar solo citas próximas (futuras) y pasarlas al Model
+            // Filtrar solo citas próximas (futuras) y pasarlas al Model
             var citasProximas = citas
                 .Where(c => c.FechaCita >= DateTime.Now)
                 .OrderBy(c => c.FechaCita)

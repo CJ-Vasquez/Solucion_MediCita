@@ -3,7 +3,7 @@
     public class Venta
     {
         public int IdVenta { get; set; }
-        public int IdPaciente { get; set; } // ✅ CAMBIADO: IdUsuario → IdPaciente
+        public int IdPaciente { get; set; } 
         public decimal Total { get; set; }
         public DateTime FechaVenta { get; set; }
 

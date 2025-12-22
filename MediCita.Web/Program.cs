@@ -74,7 +74,7 @@ app.UseStaticFiles(); // CSS, JS, imágenes
 
 app.UseRouting();
 
-// ⚠️ ORDEN CRÍTICO: Autenticación → Autorización → Sesión
+// ORDEN CRÍTICO: Autenticación → Autorización → Sesión
 app.UseAuthentication(); // 1. Login/Cookies
 app.UseAuthorization();  // 2. Roles ([Authorize])
 app.UseSession();        // 3. Carrito/Sesión

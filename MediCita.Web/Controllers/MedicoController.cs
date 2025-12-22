@@ -22,7 +22,7 @@ namespace MediCita.Web.Controllers
         // =======================================================
         public async Task<IActionResult> Dashboard()
         {
-            // ✅ CORREGIDO: Usar ClaimTypes.NameIdentifier
+            // Usar ClaimTypes.NameIdentifier
             int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
 
             if (idUsuario == 0)
@@ -31,7 +31,7 @@ namespace MediCita.Web.Controllers
                 return RedirectToAction("Login", "Acceso");
             }
 
-            // ✅ Obtener el médico asociado al usuario logueado
+            // Obtener el médico asociado al usuario logueado
             var medico = await _medicoService.ObtenerPorUsuario(idUsuario);
 
             if (medico == null)

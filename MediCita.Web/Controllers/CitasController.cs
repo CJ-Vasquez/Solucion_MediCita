@@ -68,7 +68,7 @@ namespace MediCita.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Reservar(Cita modelo)
         {
-            // ✅ Obtener IdUsuario del usuario logueado
+            // Obtener IdUsuario del usuario logueado
             int idPaciente = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
 
             if (idPaciente == 0)
@@ -76,7 +76,7 @@ namespace MediCita.Web.Controllers
                 return RedirectToAction("Login", "Acceso");
             }
 
-            // ✅ Validar que no exista una cita duplicada (mismo médico, misma fecha/hora, estado Pendiente)
+            // Validar que no exista una cita duplicada (mismo médico, misma fecha/hora, estado Pendiente)
             var citasExistentes = await _citaService.ReporteCitasUsuario(idPaciente);
             bool citaDuplicada = citasExistentes.Any(c =>
                 c.IdMedico == modelo.IdMedico &&
@@ -97,7 +97,7 @@ namespace MediCita.Web.Controllers
             if (resultado)
             {
                 TempData["Exito"] = "✅ ¡Cita reservada con éxito! Te esperamos en la fecha programada.";
-                return RedirectToAction("Dashboard", "Cliente"); // ✅ Redirigir al Dashboard
+                return RedirectToAction("Dashboard", "Cliente"); // Redirigir al Dashboard
             }
             else
             {

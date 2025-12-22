@@ -14,7 +14,7 @@ namespace MediCita.Web.Entidades
         public string? Clave { get; set; }
         public int IdRol {  get; set; }
 
-        // Propiedad adicional para mostrar el nombre del rol (esto no esta en la tabla, pero sirve para listar)
+        
         public string? NombreRol { get; set; }
     
     }

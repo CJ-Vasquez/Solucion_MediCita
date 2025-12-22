@@ -53,7 +53,7 @@ namespace MediCita.Web.Controllers
             return View(modelo);
         }
 
-        // GET: Medicos/Editar/5
+        // GET: Medicos/Editar
         public async Task<IActionResult> Editar(int id)
         {
             Medico modelo = await _medicoService.Obtener(id);
@@ -61,7 +61,7 @@ namespace MediCita.Web.Controllers
             return View(modelo);
         }
 
-        // POST: Medicos/Editar/5
+        // POST: Medicos/Editar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(Medico modelo)
@@ -83,7 +83,7 @@ namespace MediCita.Web.Controllers
             return View(modelo);
         }
 
-        // POST: Medicos/Eliminar/5
+        // POST: Medicos/Eliminar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Eliminar(int id)

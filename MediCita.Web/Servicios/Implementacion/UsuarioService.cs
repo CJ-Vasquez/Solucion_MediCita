@@ -172,7 +172,7 @@ namespace MediCita.Web.Servicios.Implementacion
             return usuario;
         }
 
-        // ===== 1. GUARDAR (CREAR) - CORREGIDO =====
+        // ===== 1. GUARDAR (CREAR)  =====
         public async Task<bool> Guardar(Usuario modelo)
         {
             bool respuesta = false;
@@ -218,7 +218,7 @@ namespace MediCita.Web.Servicios.Implementacion
             return respuesta;
         }
 
-        // ===== 2. EDITAR - CORREGIDO =====
+        // ===== 2. EDITAR =====
         public async Task<bool> Editar(Usuario modelo)
         {
             bool respuesta = false;
@@ -269,7 +269,7 @@ namespace MediCita.Web.Servicios.Implementacion
             return respuesta;
         }
 
-        // ===== 3. ELIMINAR - CORREGIDO =====
+        // ===== 3. ELIMINAR =====
         public async Task<bool> Eliminar(int id)
         {
             bool respuesta = false;

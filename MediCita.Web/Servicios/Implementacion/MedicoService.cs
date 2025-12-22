@@ -83,7 +83,7 @@ namespace MediCita.Web.Servicios.Implementacion
         }
 
         // ========================================
-        // ✅ NUEVO: OBTENER MÉDICO POR ID DE USUARIO
+        //  OBTENER MÉDICO POR ID DE USUARIO
         // ========================================
         public async Task<Medico?> ObtenerPorUsuario(int idUsuario)
         {

@@ -90,7 +90,7 @@ namespace MediCita.Web.Controllers
                 carrito.Add(item);
             }
 
-            // ✅ GUARDAR CARRITO Y CONTADOR
+            // GUARDAR CARRITO Y CONTADOR
             HttpContext.Session.SetObject("CarritoCompra", carrito);
             HttpContext.Session.SetInt32("CantidadCarrito", carrito.Sum(x => x.Cantidad));
 
@@ -150,7 +150,7 @@ namespace MediCita.Web.Controllers
             }
         }
 
-        // ✅ NUEVO: Alias para ProcesarCompra (llama a TerminarVenta)
+        // NUEVO: Alias para ProcesarCompra (llama a TerminarVenta)
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProcesarCompra()

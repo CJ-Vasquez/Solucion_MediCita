@@ -6,7 +6,7 @@ namespace MediCita.Web.Servicios.Contrato
     {
         Task<List<Medico>> Listar();
         Task<Medico?> Obtener(int id);
-        Task<Medico?> ObtenerPorUsuario(int idUsuario); // ✅ AGREGADO
+        Task<Medico?> ObtenerPorUsuario(int idUsuario); 
         Task<bool> Guardar(Medico modelo);
         Task<bool> Editar(Medico modelo);
         Task<bool> Eliminar(int id);

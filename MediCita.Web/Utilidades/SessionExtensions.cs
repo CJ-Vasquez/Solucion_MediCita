@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json; // Asegúrate de que esta librería esté instalada o usa System.Text.Json
+﻿using Newtonsoft.Json; 
 
 namespace MediCita.Web.Utilidades
 {

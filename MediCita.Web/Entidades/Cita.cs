@@ -11,7 +11,7 @@ namespace MediCita.Web.Entidades
         public string? Estado { get; set; }
         public string? NombreMedico { get; set; }
         public string? NombreEspecialidad { get; set; }
-        public string? NombrePaciente { get; set; } // Agregado para corregir CS011
+        public string? NombrePaciente { get; set; }
 
     }
 }

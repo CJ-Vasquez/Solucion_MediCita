@@ -201,7 +201,7 @@ namespace MediCita.Web.Controllers
         }
 
         // ========================================
-        // GESTIÓN DE USUARIOS (CORREGIDO)
+        // GESTIÓN DE USUARIOS 
         // ========================================
         public async Task<IActionResult> Usuarios()
         {
